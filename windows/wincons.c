@@ -50,61 +50,6 @@ int verify_ssh_host_key(void *frontend, char *host, int port,
                         void (*callback)(void *ctx, int result), void *ctx)
 {
     int ret;
-    HANDLE hin;
-    DWORD savemode, i;
-
-    static const char absentmsg_batch[] =
-	"The server's host key is not cached in the registry. You\n"
-	"have no guarantee that the server is the computer you\n"
-	"think it is.\n"
-	"The server's %s key fingerprint is:\n"
-	"%s\n"
-	"Connection abandoned.\n";
-    static const char absentmsg[] =
-	"The server's host key is not cached in the registry. You\n"
-	"have no guarantee that the server is the computer you\n"
-	"think it is.\n"
-	"The server's %s key fingerprint is:\n"
-	"%s\n"
-	"If you trust this host, enter \"y\" to add the key to\n"
-	"PuTTY's cache and carry on connecting.\n"
-	"If you want to carry on connecting just once, without\n"
-	"adding the key to the cache, enter \"n\".\n"
-	"If you do not trust this host, press Return to abandon the\n"
-	"connection.\n"
-	"Store key in cache? (y/n) ";
-
-    static const char wrongmsg_batch[] =
-	"WARNING - POTENTIAL SECURITY BREACH!\n"
-	"The server's host key does not match the one PuTTY has\n"
-	"cached in the registry. This means that either the\n"
-	"server administrator has changed the host key, or you\n"
-	"have actually connected to another computer pretending\n"
-	"to be the server.\n"
-	"The new %s key fingerprint is:\n"
-	"%s\n"
-	"Connection abandoned.\n";
-    static const char wrongmsg[] =
-	"WARNING - POTENTIAL SECURITY BREACH!\n"
-	"The server's host key does not match the one PuTTY has\n"
-	"cached in the registry. This means that either the\n"
-	"server administrator has changed the host key, or you\n"
-	"have actually connected to another computer pretending\n"
-	"to be the server.\n"
-	"The new %s key fingerprint is:\n"
-	"%s\n"
-	"If you were expecting this change and trust the new key,\n"
-	"enter \"y\" to update PuTTY's cache and continue connecting.\n"
-	"If you want to carry on connecting but without updating\n"
-	"the cache, enter \"n\".\n"
-	"If you want to abandon the connection completely, press\n"
-	"Return to cancel. Pressing Return is the ONLY guaranteed\n"
-	"safe choice.\n"
-	"Update cached key? (y/n, Return cancels connection) ";
-
-    static const char abandoned[] = "Connection abandoned.\n";
-
-    char line[32];
 
     /*
      * Verify the key against the registry.
@@ -114,40 +59,8 @@ int verify_ssh_host_key(void *frontend, char *host, int port,
     if (ret == 0)		       /* success - key matched OK */
 	return 1;
 
-    if (ret == 2) {		       /* key was different */
-	if (console_batch_mode) {
-	    fprintf(stderr, wrongmsg_batch, keytype, fingerprint);
-            return 0;
-	}
-	fprintf(stderr, wrongmsg, keytype, fingerprint);
-	fflush(stderr);
-    }
-    if (ret == 1) {		       /* key was absent */
-	if (console_batch_mode) {
-	    fprintf(stderr, absentmsg_batch, keytype, fingerprint);
-            return 0;
-	}
-	fprintf(stderr, absentmsg, keytype, fingerprint);
-	fflush(stderr);
-    }
-
-    line[0] = '\0';         /* fail safe if ReadFile returns no data */
-
-    hin = GetStdHandle(STD_INPUT_HANDLE);
-    GetConsoleMode(hin, &savemode);
-    SetConsoleMode(hin, (savemode | ENABLE_ECHO_INPUT |
-			 ENABLE_PROCESSED_INPUT | ENABLE_LINE_INPUT));
-    ReadFile(hin, line, sizeof(line) - 1, &i, NULL);
-    SetConsoleMode(hin, savemode);
-
-    if (line[0] != '\0' && line[0] != '\r' && line[0] != '\n') {
-	if (line[0] == 'y' || line[0] == 'Y')
-	    store_host_key(host, port, keytype, keystr);
-        return 1;
-    } else {
-	fprintf(stderr, abandoned);
-        return 0;
-    }
+    store_host_key(host, port, keytype, keystr);
+    return 1;
 }
 
 void update_specials_menu(void *frontend)
