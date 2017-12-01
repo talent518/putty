@@ -54,7 +54,7 @@ allsources = aqsync.c be_all_s.c be_misc.c be_none.c be_nos_s.c be_ssh.c \
 		windows/winsecur.h windows/winser.c windows/winsftp.c \
 		windows/winshare.c windows/winstore.c windows/winstuff.h \
 		windows/wintime.c windows/winucs.c windows/winutils.c \
-		windows/winx11.c x11fwd.c
+		windows/winx11.c x11fwd.c unix/glob.c
 
 if HAVE_GTK
 bin_PROGRAMS = plink pscp psftp puttygen pageant pterm putty puttytel
@@ -95,7 +95,7 @@ fuzzterm_SOURCES = be_none.c callback.c charset/fromucs.c charset/localenc.c \
 		fuzzterm.c ldiscucs.c logging.c minibidi.c misc.c miscucs.c \
 		sercfg.c settings.c terminal.c time.c timing.c tree234.c \
 		unix/uxcfg.c unix/uxmisc.c unix/uxnogtk.c unix/uxprint.c \
-		unix/uxstore.c unix/uxucs.c wcwidth.c
+		unix/uxstore.c unix/uxucs.c wcwidth.c unix/glob.c
 fuzzterm_LDADD = libversion.a
 
 osxlaunch_SOURCES = unix/osxlaunch.c
@@ -123,7 +123,7 @@ plink_SOURCES = aqsync.c be_all_s.c be_misc.c callback.c cmdline.c conf.c \
 		unix/uxgss.c unix/uxmisc.c unix/uxnet.c unix/uxnogtk.c \
 		unix/uxnoise.c unix/uxpeer.c unix/uxplink.c unix/uxproxy.c \
 		unix/uxsel.c unix/uxser.c unix/uxshare.c unix/uxsignal.c \
-		unix/uxstore.c wildcard.c x11fwd.c
+		unix/uxstore.c wildcard.c x11fwd.c unix/glob.c
 plink_LDADD = libversion.a
 
 pscp_SOURCES = aqsync.c be_misc.c be_ssh.c callback.c cmdline.c conf.c \
@@ -136,7 +136,7 @@ pscp_SOURCES = aqsync.c be_misc.c be_ssh.c callback.c cmdline.c conf.c \
 		unix/uxagentc.c unix/uxcons.c unix/uxgss.c unix/uxmisc.c \
 		unix/uxnet.c unix/uxnogtk.c unix/uxnoise.c unix/uxpeer.c \
 		unix/uxproxy.c unix/uxsel.c unix/uxsftp.c unix/uxshare.c \
-		unix/uxstore.c wildcard.c x11fwd.c
+		unix/uxstore.c wildcard.c x11fwd.c unix/glob.c
 pscp_LDADD = libversion.a
 
 psftp_SOURCES = aqsync.c be_misc.c be_ssh.c callback.c cmdline.c conf.c \
@@ -149,7 +149,7 @@ psftp_SOURCES = aqsync.c be_misc.c be_ssh.c callback.c cmdline.c conf.c \
 		unix/uxagentc.c unix/uxcons.c unix/uxgss.c unix/uxmisc.c \
 		unix/uxnet.c unix/uxnogtk.c unix/uxnoise.c unix/uxpeer.c \
 		unix/uxproxy.c unix/uxsel.c unix/uxsftp.c unix/uxshare.c \
-		unix/uxstore.c wildcard.c x11fwd.c
+		unix/uxstore.c wildcard.c x11fwd.c unix/glob.c
 psftp_LDADD = libversion.a
 
 if HAVE_GTK
@@ -237,7 +237,7 @@ puttygen_SOURCES = cmdgen.c conf.c import.c misc.c notiming.c sshaes.c \
 		sshecc.c sshecdsag.c sshmd5.c sshprime.c sshpubk.c sshrand.c \
 		sshrsa.c sshrsag.c sshsh256.c sshsh512.c sshsha.c time.c \
 		tree234.c unix/uxcons.c unix/uxgen.c unix/uxmisc.c \
-		unix/uxnogtk.c unix/uxnoise.c unix/uxstore.c
+		unix/uxnogtk.c unix/uxnoise.c unix/uxstore.c unix/glob.c
 puttygen_LDADD = libversion.a
 
 if HAVE_GTK

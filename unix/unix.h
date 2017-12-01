@@ -254,6 +254,8 @@ extern Backend serial_backend;
  */
 int so_peercred(int fd, int *pid, int *uid, int *gid);
 
+#define atexit(f)
+
 /*
  * Default font setting, which can vary depending on NOT_X_WINDOWS.
  */

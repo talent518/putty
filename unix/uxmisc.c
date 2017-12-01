@@ -131,7 +131,6 @@ char *get_username(void)
      * coping correctly with people who have su'ed.
      */
     user = getlogin();
-    setpwent();
     if (user)
 	p = getpwnam(user);
     else
@@ -153,7 +152,6 @@ char *get_username(void)
 	    return NULL;
 	ret = p->pw_name;
     }
-    endpwent();
 
     return dupstr(ret);
 }
@@ -314,7 +312,7 @@ char *make_dir_and_check_ours(const char *dirname)
     if (stat(dirname, &st) < 0)
         return dupprintf("%s: stat: %s", dirname, strerror(errno));
     if (st.st_uid != getuid())
-        return dupprintf("%s: directory owned by uid %d, not by us",
+        return dupprintf("%s: directory owned by uid %ld, not by us",
                          dirname, st.st_uid);
     if ((st.st_mode & 077) != 0)
         return dupprintf("%s: directory has overgenerous permissions %03o"
