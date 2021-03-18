@@ -159,58 +159,6 @@ int console_verify_ssh_host_key(
     void (*callback)(void *ctx, int result), void *ctx)
 {
     int ret;
-<<<<<<< Updated upstream
-=======
-
-    static const char absentmsg_batch[] =
-        "The server's host key is not cached. You have no guarantee\n"
-        "that the server is the computer you think it is.\n"
-        "The server's %s key fingerprint is:\n"
-        "%s\n"
-        "Connection abandoned.\n";
-    static const char absentmsg[] =
-        "The server's host key is not cached. You have no guarantee\n"
-        "that the server is the computer you think it is.\n"
-        "The server's %s key fingerprint is:\n"
-        "%s\n"
-        "If you trust this host, enter \"y\" to add the key to\n"
-        "PuTTY's cache and carry on connecting.\n"
-        "If you want to carry on connecting just once, without\n"
-        "adding the key to the cache, enter \"n\".\n"
-        "If you do not trust this host, press Return to abandon the\n"
-        "connection.\n"
-        "Store key in cache? (y/n) ";
-
-    static const char wrongmsg_batch[] =
-        "WARNING - POTENTIAL SECURITY BREACH!\n"
-        "The server's host key does not match the one PuTTY has\n"
-        "cached. This means that either the server administrator\n"
-        "has changed the host key, or you have actually connected\n"
-        "to another computer pretending to be the server.\n"
-        "The new %s key fingerprint is:\n"
-        "%s\n"
-        "Connection abandoned.\n";
-    static const char wrongmsg[] =
-        "WARNING - POTENTIAL SECURITY BREACH!\n"
-        "The server's host key does not match the one PuTTY has\n"
-        "cached. This means that either the server administrator\n"
-        "has changed the host key, or you have actually connected\n"
-        "to another computer pretending to be the server.\n"
-        "The new %s key fingerprint is:\n"
-        "%s\n"
-        "If you were expecting this change and trust the new key,\n"
-        "enter \"y\" to update PuTTY's cache and continue connecting.\n"
-        "If you want to carry on connecting but without updating\n"
-        "the cache, enter \"n\".\n"
-        "If you want to abandon the connection completely, press\n"
-        "Return to cancel. Pressing Return is the ONLY guaranteed\n"
-        "safe choice.\n"
-        "Update cached key? (y/n, Return cancels connection) ";
-
-    static const char abandoned[] = "Connection abandoned.\n";
-
-    char line[32];
->>>>>>> Stashed changes
     struct termios cf;
 
     /*
@@ -222,51 +170,9 @@ int console_verify_ssh_host_key(
         return 1;
 
     premsg(&cf);
-<<<<<<< Updated upstream
     store_host_key(host, port, keytype, keystr);
     postmsg(&cf);
     return 1;
-=======
-    if (ret == 2) {                    /* key was different */
-        if (console_batch_mode) {
-            fprintf(stderr, wrongmsg_batch, keytype, fingerprint);
-            return 0;
-        }
-        fprintf(stderr, wrongmsg, keytype, fingerprint);
-        fflush(stderr);
-    }
-    if (ret == 1) {                    /* key was absent */
-        if (console_batch_mode) {
-            fprintf(stderr, absentmsg_batch, keytype, fingerprint);
-            return 0;
-        }
-        fprintf(stderr, absentmsg, keytype, fingerprint);
-        fflush(stderr);
-    }
-
-    {
-        struct termios oldmode, newmode;
-        tcgetattr(0, &oldmode);
-        newmode = oldmode;
-        newmode.c_lflag |= ECHO | ISIG | ICANON;
-        tcsetattr(0, TCSANOW, &newmode);
-        line[0] = '\0';
-        if (block_and_read(0, line, sizeof(line) - 1) <= 0)
-            /* handled below */;
-        tcsetattr(0, TCSANOW, &oldmode);
-    }
-
-    if (line[0] != '\0' && line[0] != '\r' && line[0] != '\n') {
-        if (line[0] == 'y' || line[0] == 'Y')
-            store_host_key(host, port, keytype, keystr);
-        postmsg(&cf);
-        return 1;
-    } else {
-        fprintf(stderr, abandoned);
-        postmsg(&cf);
-        return 0;
-    }
->>>>>>> Stashed changes
 }
 
 int console_confirm_weak_crypto_primitive(
