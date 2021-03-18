@@ -41,7 +41,7 @@ Suppress the progress display when generating a new key.
 .IP "\fB\-\-old\-passphrase\fP \fIfile\fP"
 Specify a file name; the first line will be read from this file (removing any trailing newline) and used as the old passphrase. \fBCAUTION:\fP If the passphrase is important, the file should be stored on a temporary filesystem or else securely erased after use.
 .IP "\fB\-\-random\-device\fP \fIdevice\fP"
-Specify device to read entropy from (default \fB/dev/random\fP).
+Specify device to read entropy from. By default, \fBputtygen\fP uses \fB/dev/urandom\fP, falling back to \fB/dev/random\fP if it has to.
 .PP
 In the second phase, \fBputtygen\fP optionally alters properties of the key it has loaded or generated. The options to control this are:
 .IP "\fB\-C\fP \fInew\-comment\fP"

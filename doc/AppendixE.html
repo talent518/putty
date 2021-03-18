@@ -35,6 +35,9 @@
 As of release 0.58, all of the PuTTY executables contain fingerprint material (usually accessed via the <a name="i2"></a><code>-pgpfp</code> command-line option), such that if you have an executable you trust, you can use it to establish a trust path, for instance to a newer version downloaded from the Internet.
 </p>
 <p>
+As of release 0.67, the Windows executables and installer also contain built-in signatures that are automatically verified by Windows' own mechanism (&#8216;<a name="i3"></a>Authenticode&#8217;). The keys used for that are different, and are not covered here.
+</p>
+<p>
 (Note that none of the keys, signatures, etc mentioned here have anything to do with keys used with SSH - they are purely for verifying the origin of files distributed by the PuTTY team.)
 </p>
 <h2><a name="pgpkeys-pubkey"></a><a name="SE.1"></a>E.1 Public keys</h2>
@@ -73,28 +76,28 @@ Used to tie all the above keys into the GPG web of trust. The Master Key signs a
 The current issue of those keys are available for download from the PuTTY website, and are also available on PGP keyservers using the key IDs listed below.
 </p>
 <dl><dt>
-<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/master-2015.asc"><strong>Master Key</strong></a>
+<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/master-2018.asc"><strong>Master Key</strong> (2018)</a>
 </dt>
 <dd>
-RSA, 4096-bit. Key ID: <code>4096R/04676F7C</code> (long version: <code>4096R/AB585DC604676F7C</code>). Fingerprint: <code>440D&nbsp;E3B5&nbsp;B7A1&nbsp;CA85&nbsp;B3CC&nbsp;&nbsp;1718&nbsp;AB58&nbsp;5DC6&nbsp;0467&nbsp;6F7C</code>
+RSA, 4096-bit. Key ID: <code>76BC7FE4EBFD2D9E</code>. Fingerprint: <code>24E1&nbsp;B1C5&nbsp;75EA&nbsp;3C9F&nbsp;F752&nbsp;&nbsp;A922&nbsp;76BC&nbsp;7FE4&nbsp;EBFD&nbsp;2D9E</code>
 </dd>
 <dt>
-<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/release-2015.asc"><strong>Release Key</strong></a>
+<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/release-2018.asc"><strong>Release Key</strong> (2018)</a>
 </dt>
 <dd>
-RSA, 2048-bit. Key ID: <code>2048R/B43434E4</code> (long version: <code>2048R/9DFE2648B43434E4</code>). Fingerprint: <code>0054&nbsp;DDAA&nbsp;8ADA&nbsp;15D2&nbsp;768A&nbsp;&nbsp;6DE7&nbsp;9DFE&nbsp;2648&nbsp;B434&nbsp;34E4</code>
+RSA, 3072-bit. Key ID: <code>6289A25F4AE8DA82</code>. Fingerprint: <code>E273&nbsp;94AC&nbsp;A3F9&nbsp;D904&nbsp;9522&nbsp;&nbsp;E054&nbsp;6289&nbsp;A25F&nbsp;4AE8&nbsp;DA82</code>
 </dd>
 <dt>
-<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/contact-2016.asc"><strong>Secure Contact Key</strong></a>
+<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/snapshot-2018.asc"><strong>Snapshot Key</strong> (2018)</a>
 </dt>
 <dd>
-RSA, 2048-bit. Main key ID: <code>2048R/8A0AF00B</code> (long version: <code>2048R/C4FCAAD08A0AF00B</code>). Encryption subkey ID: <code>2048R/50C2CF5C</code> (long version: <code>2048R/9EB39CC150C2CF5C</code>). Fingerprint: <code>8A26&nbsp;250E&nbsp;763F&nbsp;E359&nbsp;75F3&nbsp;&nbsp;118F&nbsp;C4FC&nbsp;AAD0&nbsp;8A0A&nbsp;F00B</code>
+RSA, 3072-bit. Key ID: <code>38BA7229B7588FD1</code>. Fingerprint: <code>C92B&nbsp;52E9&nbsp;9AB6&nbsp;1DDA&nbsp;33DB&nbsp;&nbsp;2B7A&nbsp;38BA&nbsp;7229&nbsp;B758&nbsp;8FD1</code>
 </dd>
 <dt>
-<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/snapshot-2015.asc"><strong>Snapshot Key</strong></a>
+<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/contact-2018.asc"><strong>Secure Contact Key</strong> (2018)</a>
 </dt>
 <dd>
-RSA, 2048-bit. Key ID: <code>2048R/D15F7E8A</code> (long version: <code>2048R/EEF20295D15F7E8A</code>). Fingerprint: <code>0A3B&nbsp;0048&nbsp;FE49&nbsp;9B67&nbsp;A234&nbsp;&nbsp;FEB6&nbsp;EEF2&nbsp;0295&nbsp;D15F&nbsp;7E8A</code>
+RSA, 3072-bit. Key ID: <code>657D487977F95C98</code>. Fingerprint: <code>A680&nbsp;0082&nbsp;2998&nbsp;6E46&nbsp;22CA&nbsp;&nbsp;0E43&nbsp;657D&nbsp;4879&nbsp;77F9&nbsp;5C98</code>
 </dd>
 </dl>
 <h2><a name="pgpkeys-security"></a><a name="SE.2"></a>E.2 Security details</h2>
@@ -160,19 +163,54 @@ We have uploaded our various keys to public keyservers, so that even if you don'
 </p>
 <h2><a name="pgpkeys-rollover"></a><a name="SE.3"></a>E.3 Key rollover</h2>
 <p>
-Our current keys were generated in September 2015, except for the Secure Contact Key which was generated in February 2016 (we didn't think of it until later).
+Our current keys were generated in August 2018.
 </p>
 <p>
-Prior to that, we had a much older set of keys generated in 2000. For each of the key types above (other than the Secure Contact Key), we provided both an RSA key <em>and</em> a DSA key (because at the time we generated them, RSA was not in practice available to everyone, due to export restrictions).
+Each new Master Key is signed with the old one, to show that it really is owned by the same people and not substituted by an attacker.
 </p>
 <p>
-The new Master Key is signed with both of the old ones, to show that it really is owned by the same people and not substituted by an attacker. Also, we have retrospectively signed the old Release Keys with the new Master Key, in case you're trying to verify the signatures on a release prior to the rollover and can find a chain of trust to those keys from any of the people who have signed our new Master Key.
+Each new Master Key also signs the previous Release Keys, in case you're trying to verify the signatures on a release prior to the rollover and can find a chain of trust to those keys from any of the people who have signed our new Master Key.
 </p>
 <p>
-Future releases will be signed with the up-to-date keys shown above. Releases prior to the rollover are signed with the old Release Keys.
+Each release is signed with the Release Key that was current at the time of release. We don't go back and re-sign old releases with newly generated keys.
 </p>
 <p>
-For completeness, those old keys are given here:
+The details of all previous keys are given here.
+</p>
+<p>
+<strong>Key generated in 2016</strong> (when we first introduced the Secure Contact Key)
+</p>
+<dl><dt>
+<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/contact-2016.asc"><strong>Secure Contact Key</strong> (2016)</a>
+</dt>
+<dd>
+RSA, 2048-bit. Main key ID: <code>2048R/8A0AF00B</code> (long version: <code>2048R/C4FCAAD08A0AF00B</code>). Encryption subkey ID: <code>2048R/50C2CF5C</code> (long version: <code>2048R/9EB39CC150C2CF5C</code>). Fingerprint: <code>8A26&nbsp;250E&nbsp;763F&nbsp;E359&nbsp;75F3&nbsp;&nbsp;118F&nbsp;C4FC&nbsp;AAD0&nbsp;8A0A&nbsp;F00B</code>
+</dd>
+</dl>
+<p>
+<strong>Keys generated in the 2015 rollover</strong>
+</p>
+<dl><dt>
+<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/master-2015.asc"><strong>Master Key</strong> (2015)</a>
+</dt>
+<dd>
+RSA, 4096-bit. Key ID: <code>4096R/04676F7C</code> (long version: <code>4096R/AB585DC604676F7C</code>). Fingerprint: <code>440D&nbsp;E3B5&nbsp;B7A1&nbsp;CA85&nbsp;B3CC&nbsp;&nbsp;1718&nbsp;AB58&nbsp;5DC6&nbsp;0467&nbsp;6F7C</code>
+</dd>
+<dt>
+<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/release-2015.asc"><strong>Release Key</strong> (2015)</a>
+</dt>
+<dd>
+RSA, 2048-bit. Key ID: <code>2048R/B43434E4</code> (long version: <code>2048R/9DFE2648B43434E4</code>). Fingerprint: <code>0054&nbsp;DDAA&nbsp;8ADA&nbsp;15D2&nbsp;768A&nbsp;&nbsp;6DE7&nbsp;9DFE&nbsp;2648&nbsp;B434&nbsp;34E4</code>
+</dd>
+<dt>
+<a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/snapshot-2015.asc"><strong>Snapshot Key</strong> (2015)</a>
+</dt>
+<dd>
+RSA, 2048-bit. Key ID: <code>2048R/D15F7E8A</code> (long version: <code>2048R/EEF20295D15F7E8A</code>). Fingerprint: <code>0A3B&nbsp;0048&nbsp;FE49&nbsp;9B67&nbsp;A234&nbsp;&nbsp;FEB6&nbsp;EEF2&nbsp;0295&nbsp;D15F&nbsp;7E8A</code>
+</dd>
+</dl>
+<p>
+<strong>Original keys generated in 2000</strong> (two sets, RSA and DSA)
 </p>
 <dl><dt>
 <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/keys/master-rsa.asc"><strong>Master Key</strong> (original RSA)</a>
@@ -213,5 +251,5 @@ DSA, 1024-bit. Key ID: <code>1024D/7D3E4A00</code> (long version: <code>1024D/16
 </dl>
 
 <hr><p>If you want to provide feedback on this manual or on the PuTTY tools themselves, see the <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/feedback.html">Feedback page</a>.</p><address>
-[PuTTY release 0.70]</address></body>
+[PuTTY release 0.74]</address></body>
 </html>

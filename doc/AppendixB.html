@@ -61,7 +61,7 @@ Since the PuTTY contact address is a mailing list, e-mails larger than 40Kb will
 If you are considering sending any kind of large data file to the PuTTY team, it's almost always a bad idea, or at the very least it would be better to ask us first whether we actually need the file. Alternatively, you could put the file on a web site and just send us the URL; that way, we don't have to download it unless we decide we actually need it, and only one of us needs to download it instead of it being automatically copied to all the developers.
 </p>
 <p>
-(If the file contains confidential information, then you could encrypt it with our Secure Contact Key; see <a href="AppendixE.html#pgpkeys-pubkey">section E.1</a> for details.)
+(If the file contains confidential information, then you could encrypt it with our Secure Contact Key; see <a href="AppendixE.html#pgpkeys-pubkey">section E.1</a> for details. Please <em>only</em> use this for information that <em>needs</em> to be confidential.)
 </p>
 <p>
 Some people like to send mail in MS Word format. Please <em>don't</em> send us bug reports, or any other mail, as a Word document. Word documents are roughly fifty times larger than writing the same report in plain text. In addition, most of the PuTTY team read their e-mail on Unix machines, so copying the file to a Windows box to run Word is very inconvenient. Not only that, but several of us don't even <em>have</em> a copy of Word!
@@ -119,10 +119,10 @@ If none of those options solved your problem, and you still need to report a bug
 Tell us what <a name="i4"></a>version of PuTTY you are running. To find this out, use the &#8216;About PuTTY&#8217; option from the System menu. Please <em>do not</em> just tell us &#8216;I'm running the latest version&#8217;; e-mail can be delayed and it may not be obvious which version was the latest at the time you sent the message.
 </li>
 <li>
-PuTTY is a multi-platform application; tell us what version of what OS you are running PuTTY on. (If you're running on Unix, or Windows for Alpha, tell us, or we'll assume you're running on Windows for Intel as this is overwhelmingly the case.)
+PuTTY is a multi-platform application; tell us what version of what OS you are running PuTTY on. (If you're running on Unix, or Windows for Arm, tell us, or we'll assume you're running on Windows for Intel as this is overwhelmingly the case.)
 </li>
 <li>
-Tell us what protocol you are connecting with: SSH, Telnet, Rlogin or Raw mode.
+Tell us what protocol you are connecting with: SSH, Telnet, Rlogin, or Raw mode, or a serial connection.
 </li>
 <li>
 Tell us what kind of server you are connecting to; what OS, and if possible what SSH server (if you're using SSH). You can get some of this information from the PuTTY Event Log (see <a href="Chapter3.html#using-eventlog">section 3.1.3.1</a> in the manual).
@@ -269,5 +269,5 @@ The actual address to mail is <code>&lt;<a href="mailto:putty@projects.tartarus.
 </p>
 
 <hr><p>If you want to provide feedback on this manual or on the PuTTY tools themselves, see the <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/feedback.html">Feedback page</a>.</p><address>
-[PuTTY release 0.70]</address></body>
+[PuTTY release 0.74]</address></body>
 </html>

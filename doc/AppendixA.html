@@ -55,6 +55,8 @@
 <ul>
 <li><a href="#faq-term">A.5.1 What terminal type does PuTTY use?</a></li>
 <li><a href="#faq-settings">A.5.2 Where does PuTTY store its data?</a></li>
+<li><a href="#faq-trust-sigils">A.5.3 Why do small PuTTY icons appear next to the login prompts?</a></li>
+<li><a href="#faq-plink-pause">A.5.4 Why has Plink started saying &#8216;Press Return to begin session&#8217;?</a></li>
 </ul></li>
 <li><a href="#faq-howto">A.6 HOWTO questions</a>
 <ul>
@@ -93,6 +95,7 @@
 <li><a href="#faq-rekey">A.7.20 My SSH-2 session locks up for a few seconds every so often.</a></li>
 <li><a href="#faq-xpwontrun">A.7.21 PuTTY fails to start up. Windows claims that &#8216;the application configuration is incorrect&#8217;.</a></li>
 <li><a href="#faq-system32">A.7.22 When I put 32-bit PuTTY in <code>C:\WINDOWS\SYSTEM32</code> on my 64-bit Windows system, &#8216;Duplicate Session&#8217; doesn't work.</a></li>
+<li><a href="#faq-iutf8">A.7.23 After I upgraded PuTTY to 0.68, I can no longer connect to my embedded device or appliance.</a></li>
 </ul></li>
 <li><a href="#faq-secure">A.8 Security questions</a>
 <ul>
@@ -157,10 +160,10 @@ try the <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/wishlist/">W
 </ul>
 <h3><a name="faq-ssh2"></a><a name="QA.2.1"></a>A.2.1 Does PuTTY support SSH-2?</h3>
 <p>
-Yes. SSH-2 support has been available in PuTTY since version 0.50.
+Yes. SSH-2 support has been available in PuTTY since version 0.50 in 2000.
 </p>
 <p>
-Public key authentication (both RSA and DSA) in SSH-2 is new in version 0.52.
+Public key authentication (both RSA and DSA) in SSH-2 was new in version 0.52 in 2002.
 </p>
 <h3><a name="faq-ssh2-keyfmt"></a><a name="QA.2.2"></a>A.2.2 Does PuTTY support reading OpenSSH or <code>ssh.com</code> SSH-2 private key files?</h3>
 <p>
@@ -189,11 +192,11 @@ Yes, all of PuTTY's settings can be saved in named session profiles. You can als
 </p>
 <h3><a name="faq-disksettings"></a><a name="QA.2.6"></a>A.2.6 Does PuTTY support storing its settings in a disk file?</h3>
 <p>
-Not at present, although <a href="Chapter4.html#config-file">section 4.29</a> in the documentation gives a method of achieving the same effect.
+Not at present, although <a href="Chapter4.html#config-file">section 4.30</a> in the documentation gives a method of achieving the same effect.
 </p>
 <h3><a name="faq-fullscreen"></a><a name="QA.2.7"></a>A.2.7 Does PuTTY support full-screen mode, like a DOS box?</h3>
 <p>
-Yes; this is a new feature in version 0.52.
+Yes; this was added in version 0.52, in 2002.
 </p>
 <h3><a name="faq-password-remember"></a><a name="QA.2.8"></a>A.2.8 Does PuTTY have the ability to <a name="i3"></a>remember my password so I don't have to type it every time?</h3>
 <p>
@@ -226,17 +229,23 @@ If you have host keys available in the common <a name="i5"></a><code>known_hosts
 </p>
 <h3><a name="faq-server"></a><a name="QA.2.10"></a>A.2.10 Will you write an SSH server for the PuTTY suite, to go with the client?</h3>
 <p>
-No. The only reason we might want to would be if we could easily re-use existing code and significantly cut down the effort. We don't believe this is the case; there just isn't enough common ground between an SSH client and server to make it worthwhile.
+Not one that you'd want to use.
 </p>
 <p>
-If someone else wants to use bits of PuTTY in the process of writing a Windows SSH server, they'd be perfectly welcome to of course, but I really can't see it being a lot less effort for us to do that than it would be for us to write a server from the ground up. We don't have time, and we don't have motivation. The code is available if anyone else wants to try it.
+While much of the protocol and networking code can be made common between a client and server, to make a <em>useful</em> general-purpose server requires all sorts of fiddly new code like interacting with OS authentication databases and the like.
 </p>
-<h3><a name="faq-pscp-ascii"></a><a name="QA.2.11"></a>A.2.11 Can PSCP or PSFTP transfer files in <a name="i6"></a>ASCII mode?</h3>
+<p>
+A special-purpose SSH server (called <a name="i6"></a>Uppity) can now be built from the PuTTY source code, and indeed it is not usable as a general-purpose server; it exists mainly as a test harness.
+</p>
+<p>
+If someone else wants to use this as a basis for writing a general-purpose SSH server, they'd be perfectly welcome to of course; but we don't have time, and we don't have motivation. The code is available if anyone else wants to try it.
+</p>
+<h3><a name="faq-pscp-ascii"></a><a name="QA.2.11"></a>A.2.11 Can PSCP or PSFTP transfer files in <a name="i7"></a>ASCII mode?</h3>
 <p>
 Unfortunately not.
 </p>
 <p>
-Until recently, this was a limitation of the file transfer protocols: the SCP and SFTP protocols had no notion of transferring a file in anything other than binary mode. (This is still true of SCP.)
+This was a limitation of the file transfer protocols as originally specified: the SCP and SFTP protocols had no notion of transferring a file in anything other than binary mode. (This is still true of SCP.)
 </p>
 <p>
 The current draft protocol spec of SFTP proposes a means of implementing ASCII transfer. At some point PSCP/PSFTP may implement this proposal.
@@ -246,14 +255,14 @@ The current draft protocol spec of SFTP proposes a means of implementing ASCII t
 The eventual goal is for PuTTY to be a multi-platform program, able to run on at least Windows, Mac OS and Unix.
 </p>
 <p>
-Porting will become easier once PuTTY has a generalised porting layer, drawing a clear line between platform-dependent and platform-independent code. The general intention was for this porting layer to evolve naturally as part of the process of doing the first port; a Unix port has now been released and the plan seems to be working so far.
+PuTTY has been gaining a generalised porting layer, drawing a clear line between platform-dependent and platform-independent code. The general intention was for this porting layer to evolve naturally as part of the process of doing the first port; a Unix port has now been released and the plan seems to be working so far.
 </p>
 <h3><a name="faq-ports-general"></a><a name="QA.3.1"></a>A.3.1 What ports of PuTTY exist?</h3>
 <p>
 Currently, release versions of PuTTY tools only run on Windows systems and Unix.
 </p>
 <p>
-As of 0.68, the supplied PuTTY executables run on versions of Windows from XP onwards, up to and including Windows 10; and we know of no reason why PuTTY should not continue to work on future versions of Windows. We provide 32-bit and 64-bit Windows executables; see <a href="#faq-32bit-64bit">question A.6.10</a> for discussion of the compatibility issues around that.
+As of 0.68, the supplied PuTTY executables run on versions of Windows from XP onwards, up to and including Windows 10; and we know of no reason why PuTTY should not continue to work on future versions of Windows. We provide 32-bit and 64-bit Windows executables for the common x86 processor family; see <a href="#faq-32bit-64bit">question A.6.10</a> for discussion of the compatibility issues around that. The 32-bit executables require a <a name="i8"></a>Pentium 4 or newer processor. We also provide executables for Windows on Arm processors.
 </p>
 <p>
 (We used to also provide executables for Windows for the Alpha processor, but stopped after 0.58 due to lack of interest.)
@@ -270,15 +279,25 @@ We do not have release-quality ports for any other systems at the present time. 
 <p>
 There are some third-party ports to various platforms, mentioned on the <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/links.html">Links page of our website</a>.
 </p>
-<h3><a name="faq-unix"></a><a name="QA.3.2"></a>A.3.2 <a name="i7"></a>Is there a port to Unix?</h3>
+<h3><a name="faq-unix"></a><a name="QA.3.2"></a>A.3.2 <a name="i9"></a>Is there a port to Unix?</h3>
 <p>
-As of 0.54, there are Unix ports of most of the traditional PuTTY tools, and also one entirely new application.
+There are Unix ports of most of the traditional PuTTY tools, and also one entirely new application.
 </p>
 <p>
-If you look at the source release, you should find a <code>unix</code> subdirectory. There are a couple of ways of building it, including the usual <code>configure</code>/<code>make</code>; see the file <code>README</code> in the source distribution. This should build you Unix ports of Plink, PuTTY itself, PuTTYgen, PSCP, PSFTP, Pageant, and also <a name="i8"></a><code>pterm</code> - an <code>xterm</code>-type program which supports the same terminal emulation as PuTTY.
+If you look at the source release, you should find a <code>unix</code> subdirectory. There are a couple of ways of building it, including the usual <code>configure</code>/<code>make</code>; see the file <code>README</code> in the source distribution. This should build you:
 </p>
+<ul><li>
+Unix ports of PuTTY, Plink, PSCP, and PSFTP, which work pretty much the same as their Windows counterparts;
+</li>
+<li>
+Command-line versions of PuTTYgen and Pageant, whose user interface is quite different to the Windows GUI versions;
+</li>
+<li>
+<a name="i10"></a><code>pterm</code> - an <code>xterm</code>-type program which supports the same terminal emulation as PuTTY.
+</li>
+</ul>
 <p>
-If you don't have <a name="i9"></a>Gtk, you should still be able to build the command-line tools.
+If you don't have <a name="i11"></a>Gtk, you should still be able to build the command-line tools.
 </p>
 <h3><a name="faq-unix-why"></a><a name="QA.3.3"></a>A.3.3 What's the point of the Unix port? Unix has OpenSSH.</h3>
 <p>
@@ -294,14 +313,14 @@ However, if you're a Unix user and you can see no reason to switch from OpenSSH 
 <p>
 We once did some work on such a port, but it only reached an early stage, and certainly not a useful one. It's no longer being actively worked on.
 </p>
-<h3><a name="faq-win31"></a><a name="QA.3.5"></a>A.3.5 Is there a port to <a name="i10"></a>Windows 3.1?</h3>
+<h3><a name="faq-win31"></a><a name="QA.3.5"></a>A.3.5 Is there a port to <a name="i12"></a>Windows 3.1?</h3>
 <p>
 PuTTY is a 32-bit application from the ground up, so it won't run on Windows 3.1 as a native 16-bit program; and it would be <em>very</em> hard to port it to do so, because of Windows 3.1's vile memory allocation mechanisms.
 </p>
 <p>
-However, it is possible in theory to compile the existing PuTTY source in such a way that it will run under <a name="i11"></a>Win32s (an extension to Windows 3.1 to let you run 32-bit programs). In order to do this you'll need the right kind of C compiler - modern versions of Visual C at least have stopped being backwards compatible to Win32s. Also, the last time we tried this it didn't work very well.
+However, it is possible in theory to compile the existing PuTTY source in such a way that it will run under <a name="i13"></a>Win32s (an extension to Windows 3.1 to let you run 32-bit programs). In order to do this you'll need the right kind of C compiler - modern versions of Visual C at least have stopped being backwards compatible to Win32s. Also, the last time we tried this it didn't work very well.
 </p>
-<h3><a name="faq-mac-port"></a><a name="QA.3.6"></a>A.3.6 Will there be a port to the <a name="i12"></a>Mac?</h3>
+<h3><a name="faq-mac-port"></a><a name="QA.3.6"></a>A.3.6 Will there be a port to the <a name="i14"></a>Mac?</h3>
 <p>
 We hope so!
 </p>
@@ -312,7 +331,7 @@ We attempted one around 2005, written as a native Cocoa application, but it turn
 In 2015, after porting the GTK front end to work with GTK 3, we began another attempt based on making small changes to the GTK code and building it against the OS X Quartz version of GTK 3. This doesn't seem to have the window redrawing problem any more, so it's already got further than the last effort, but it is still substantially unfinished.
 </p>
 <p>
-If any OS X and/or GTK programming experts are keen to have a finished version of this, we urge them to help out with some of the remaining problems!
+If any OS X and/or GTK programming experts are keen to have a finished version of this, we urge them to help out with some of the remaining problems! See the TODO list in <code>unix/gtkapp.c</code> in the source code.
 </p>
 <h3><a name="faq-epoc"></a><a name="QA.3.7"></a>A.3.7 Will there be a port to EPOC?</h3>
 <p>
@@ -354,19 +373,19 @@ Probably your best bet is to use Plink, the command-line connection tool. If you
 This is what CVS for Windows does, for example.
 </p>
 <h2><a name="faq-details"></a><a name="SA.5"></a>A.5 Details of PuTTY's operation</h2>
-<h3><a name="faq-term"></a><a name="QA.5.1"></a>A.5.1 What <a name="i13"></a>terminal type does PuTTY use?</h3>
+<h3><a name="faq-term"></a><a name="QA.5.1"></a>A.5.1 What <a name="i15"></a>terminal type does PuTTY use?</h3>
 <p>
 For most purposes, PuTTY can be considered to be an <code>xterm</code> terminal.
 </p>
 <p>
-PuTTY also supports some terminal <a name="i14"></a>control sequences not supported by the real <code>xterm</code>: notably the Linux console sequences that reconfigure the colour palette, and the title bar control sequences used by <a name="i15"></a><code>DECterm</code> (which are different from the <code>xterm</code> ones; PuTTY supports both).
+PuTTY also supports some terminal <a name="i16"></a>control sequences not supported by the real <code>xterm</code>: notably the Linux console sequences that reconfigure the colour palette, and the title bar control sequences used by <a name="i17"></a><code>DECterm</code> (which are different from the <code>xterm</code> ones; PuTTY supports both).
 </p>
 <p>
 By default, PuTTY announces its terminal type to the server as <code>xterm</code>. If you have a problem with this, you can reconfigure it to say something else; <code>vt220</code> might help if you have trouble.
 </p>
 <h3><a name="faq-settings"></a><a name="QA.5.2"></a>A.5.2 Where does PuTTY store its data?</h3>
 <p>
-On Windows, PuTTY stores most of its data (saved sessions, SSH host keys) in the <a name="i16"></a>Registry. The precise location is
+On Windows, PuTTY stores most of its data (saved sessions, SSH host keys) in the <a name="i18"></a>Registry. The precise location is
 </p>
 <pre><code>HKEY_CURRENT_USER\Software\SimonTatham\PuTTY
 </code></pre>
@@ -374,7 +393,7 @@ On Windows, PuTTY stores most of its data (saved sessions, SSH host keys) in the
 and within that area, saved sessions are stored under <code>Sessions</code> while host keys are stored under <code>SshHostKeys</code>.
 </p>
 <p>
-PuTTY also requires a random number seed file, to improve the unpredictability of randomly chosen data needed as part of the SSH cryptography. This is stored by default in a file called <a name="i17"></a><code>PUTTY.RND</code>; this is stored by default in the &#8216;Application Data&#8217; directory, or failing that, one of a number of fallback locations. If you want to change the location of the random number seed file, you can put your chosen pathname in the Registry, at
+PuTTY also requires a random number seed file, to improve the unpredictability of randomly chosen data needed as part of the SSH cryptography. This is stored by default in a file called <a name="i19"></a><code>PUTTY.RND</code>; this is stored by default in the &#8216;Application Data&#8217; directory, or failing that, one of a number of fallback locations. If you want to change the location of the random number seed file, you can put your chosen pathname in the Registry, at
 </p>
 <pre><code>HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\RandSeedFile
 </code></pre>
@@ -383,6 +402,32 @@ You can ask PuTTY to delete all this data; see <a href="#faq-cleanup">question A
 </p>
 <p>
 On Unix, PuTTY stores all of this data in a directory <code>~/.putty</code> by default.
+</p>
+<h3><a name="faq-trust-sigils"></a><a name="SA.5.3"></a>A.5.3 Why do small <a name="i20"></a>PuTTY icons appear next to the login prompts?</h3>
+<p>
+As of PuTTY 0.71, some lines of text in the terminal window are marked with a small copy of the PuTTY icon (as far as pixels allow).
+</p>
+<p>
+This is to show trustworthiness. When the PuTTY icon appears next to a line of text, it indicates that that line of text was generated by PuTTY itself, and not generated by the server and sent to PuTTY.
+</p>
+<p>
+Text that comes from the server does not have this icon, and we've arranged that the server should not be able to fake it. (There's no control sequence the server can send which will make PuTTY draw its own icon, and if the server tries to move the cursor back up to a line that <em>already</em> has an icon and overwrite the text, the icon will disappear.)
+</p>
+<p>
+This lets you tell the difference between (for example) a legitimate prompt in which PuTTY itself asks you for your private key passphrase, and a fake prompt in which the server tries to send the identical text to trick you into telling <em>it</em> your private key passphrase.
+</p>
+<h3><a name="faq-plink-pause"></a><a name="SA.5.4"></a>A.5.4 Why has Plink started saying &#8216;Press Return to begin session&#8217;?</h3>
+<p>
+As of PuTTY 0.71, if you use Plink for an interactive SSH session, then after the login phase has finished, it will present a final interactive prompt saying &#8216;Access granted. Press Return to begin session&#8217;.
+</p>
+<p>
+This is another defence against servers trying to mimic the real authentication prompts after the session has started. When you pass through that prompt, you know that everything after it is generated by the server and not by Plink itself, so any request for your private key passphrase should be treated with suspicion.
+</p>
+<p>
+In Plink, we can't use the defence described in <a href="#faq-trust-sigils">section A.5.3</a>: Plink is running <em>in</em> the terminal, so anything it can write into the terminal, the server could write in the same way after the session starts. And we can't just print a separator line without a pause, because then the server could simply move the cursor back up to it and overwrite it (probably with a brief flicker, but you might easily miss that). The only robust defence anyone has come up with involves this pause.
+</p>
+<p>
+If you trust your server not to be abusive, you can turn this off. It will also not appear in various other circumstances where Plink can be confident it isn't necessary. See <a href="Chapter7.html#plink-option-antispoof">section 7.2.3.6</a> for details.
 </p>
 <h2><a name="faq-howto"></a><a name="SA.6"></a>A.6 HOWTO questions</h2>
 <h3><a name="faq-login"></a><a name="QA.6.1"></a>A.6.1 What login name / password should I use?</h3>
@@ -395,7 +440,7 @@ PuTTY is a communications tool, for making connections to other computers. We ma
 <p>
 If you know the name of the computer you want to connect to, but don't know what login name or password to use, you should talk to whoever administers that computer. If you don't know who that is, see the next question for some possible ways to find out.
 </p>
-<h3><a name="faq-commands"></a><a name="QA.6.2"></a>A.6.2 <a name="i18"></a>What commands can I type into my PuTTY terminal window?</h3>
+<h3><a name="faq-commands"></a><a name="QA.6.2"></a>A.6.2 <a name="i21"></a>What commands can I type into my PuTTY terminal window?</h3>
 <p>
 Again, this is not a question you should be asking <em>us</em>. You need to read the manuals, or ask the administrator, of <em>the computer you have connected to</em>.
 </p>
@@ -408,11 +453,11 @@ PuTTY does not process the commands you type into it. It's only a communications
 <p>
 If you are unsure of where to start looking for the administrator of your server, a good place to start might be to remember how you found out the host name in the PuTTY configuration. If you were given that host name by e-mail, for example, you could try asking the person who sent you that e-mail. If your company's IT department provided you with ready-made PuTTY saved sessions, then that IT department can probably also tell you something about what commands you can type during those sessions. But the PuTTY maintainer team does not administer any server you are likely to be connecting to, and cannot help you with questions of this type.
 </p>
-<h3><a name="faq-startmax"></a><a name="QA.6.3"></a>A.6.3 How can I make PuTTY start up <a name="i19"></a>maximised?</h3>
+<h3><a name="faq-startmax"></a><a name="QA.6.3"></a>A.6.3 How can I make PuTTY start up <a name="i22"></a>maximised?</h3>
 <p>
 Create a Windows shortcut to start PuTTY from, and set it as &#8216;Run Maximized&#8217;.
 </p>
-<h3><a name="faq-startsess"></a><a name="QA.6.4"></a>A.6.4 How can I create a <a name="i20"></a>Windows shortcut to start a particular saved session directly?</h3>
+<h3><a name="faq-startsess"></a><a name="QA.6.4"></a>A.6.4 How can I create a <a name="i23"></a>Windows shortcut to start a particular saved session directly?</h3>
 <p>
 To run a PuTTY session saved under the name &#8216;<code>mysession</code>&#8217;, create a Windows shortcut that invokes PuTTY with a command line like
 </p>
@@ -425,7 +470,7 @@ To run a PuTTY session saved under the name &#8216;<code>mysession</code>&#8217;
 <p>
 Use the command line <code>putty -ssh host.name</code>. Alternatively, create a saved session that specifies the SSH protocol, and start the saved session as shown in <a href="#faq-startsess">question A.6.4</a>.
 </p>
-<h3><a name="faq-cutpaste"></a><a name="QA.6.6"></a>A.6.6 How do I <a name="i21"></a>copy and paste between PuTTY and other Windows applications?</h3>
+<h3><a name="faq-cutpaste"></a><a name="QA.6.6"></a>A.6.6 How do I <a name="i24"></a>copy and paste between PuTTY and other Windows applications?</h3>
 <p>
 Copy and paste works similarly to the X Window System. You use the left mouse button to select text in the PuTTY window. The act of selection <em>automatically</em> copies the text to the clipboard: there is no need to press Ctrl-Ins or Ctrl-C or anything else. In fact, pressing Ctrl-C will send a Ctrl-C character to the other end of your connection (just like it does the rest of the time), which may have unpleasant effects. The <em>only</em> thing you need to do, to copy text to the clipboard, is to select it.
 </p>
@@ -449,7 +494,7 @@ PSCP is a command-line application, not a GUI application. If you run it without
 <p>
 To use PSCP properly, run it from a Command Prompt window. See <a href="Chapter5.html#pscp">chapter 5</a> in the documentation for more details.
 </p>
-<h3><a name="faq-pscp-spaces"></a><a name="QA.6.9"></a>A.6.9 <a name="i22"></a>How do I use PSCP to copy a file whose name has spaces in?</h3>
+<h3><a name="faq-pscp-spaces"></a><a name="QA.6.9"></a>A.6.9 <a name="i25"></a>How do I use PSCP to copy a file whose name has spaces in?</h3>
 <p>
 If PSCP is using the traditional SCP protocol, this is confusing. If you're specifying a file at the local end, you just use one set of quotes as you would normally do:
 </p>
@@ -482,13 +527,13 @@ pscp user@host:"remote file" .
 </code></pre>
 <h3><a name="faq-32bit-64bit"></a><a name="QA.6.10"></a>A.6.10 Should I run the 32-bit or the 64-bit version?</h3>
 <p>
-If you're not sure, the <a name="i23"></a>32-bit version is generally the safe option. It will run perfectly well on all processors and on all versions of Windows that PuTTY supports. PuTTY doesn't require to run as a 64-bit application to work well, and having a 32-bit PuTTY on a 64-bit system isn't likely to cause you any trouble.
+If you're not sure, the <a name="i26"></a>32-bit version is generally the safe option. It will run perfectly well on all processors and on all versions of Windows that PuTTY supports. PuTTY doesn't require to run as a 64-bit application to work well, and having a 32-bit PuTTY on a 64-bit system isn't likely to cause you any trouble.
 </p>
 <p>
-The 64-bit version (first released in 0.68) will only run if you have a 64-bit processor <em>and</em> a <a name="i24"></a>64-bit edition of Windows (both of these things are likely to be true of any recent Windows PC). It will run somewhat faster (in particular, the cryptography will be faster, especially during link setup), but it will consume slightly more memory.
+The 64-bit version (first released in 0.68) will only run if you have a 64-bit processor <em>and</em> a <a name="i27"></a>64-bit edition of Windows (both of these things are likely to be true of any recent Windows PC). It will run somewhat faster (in particular, the cryptography will be faster, especially during link setup), but it will consume slightly more memory.
 </p>
 <p>
-If you need to use an external <a name="i25"></a>DLL for GSSAPI authentication, that DLL may only be available in a 32-bit or 64-bit form, and that will dictate the version of PuTTY you need to use. (You will probably know if you're doing this; see <a href="Chapter4.html#config-ssh-auth-gssapi-libraries">section 4.23.2</a> in the documentation.)
+If you need to use an external <a name="i28"></a>DLL for GSSAPI authentication, that DLL may only be available in a 32-bit or 64-bit form, and that will dictate the version of PuTTY you need to use. (You will probably know if you're doing this; see <a href="Chapter4.html#config-ssh-auth-gssapi-libraries">section 4.24.2</a> in the documentation.)
 </p>
 <h2><a name="faq-trouble"></a><a name="SA.7"></a>A.7 Troubleshooting</h2>
 <h3><a name="faq-pscp-protocol"></a><a name="QA.7.1"></a>A.7.1 Why do I see &#8216;Fatal: Protocol error: Expected control record&#8217; in PSCP?</h3>
@@ -496,19 +541,19 @@ If you need to use an external <a name="i25"></a>DLL for GSSAPI authentication, 
 This happens because PSCP was expecting to see data from the server that was part of the PSCP protocol exchange, and instead it saw data that it couldn't make any sense of at all.
 </p>
 <p>
-This almost always happens because the <a name="i26"></a>startup scripts in your account on the server machine are generating output. This is impossible for PSCP, or any other SCP client, to work around. You should never use startup files (<code>.bashrc</code>, <code>.cshrc</code> and so on) which generate output in non-interactive sessions.
+This almost always happens because the <a name="i29"></a>startup scripts in your account on the server machine are generating output. This is impossible for PSCP, or any other SCP client, to work around. You should never use startup files (<code>.bashrc</code>, <code>.cshrc</code> and so on) which generate output in non-interactive sessions.
 </p>
 <p>
 This is not actually a PuTTY problem. If PSCP fails in this way, then all other SCP clients are likely to fail in exactly the same way. The problem is at the server end.
 </p>
-<h3><a name="faq-colours"></a><a name="QA.7.2"></a>A.7.2 I clicked on a colour in the <a name="i27"></a>Colours panel, and the colour didn't change in my terminal.</h3>
+<h3><a name="faq-colours"></a><a name="QA.7.2"></a>A.7.2 I clicked on a colour in the <a name="i30"></a>Colours panel, and the colour didn't change in my terminal.</h3>
 <p>
 That isn't how you're supposed to use the Colours panel.
 </p>
 <p>
 During the course of a session, PuTTY potentially uses <em>all</em> the colours listed in the Colours panel. It's not a question of using only one of them and you choosing which one; PuTTY will use them <em>all</em>. The purpose of the Colours panel is to let you adjust the appearance of all the colours. So to change the colour of the cursor, for example, you would select &#8216;Cursor Colour&#8217;, press the &#8216;Modify&#8217; button, and select a new colour from the dialog box that appeared. Similarly, if you want your session to appear in green, you should select &#8216;Default Foreground&#8217; and press &#8216;Modify&#8217;. Clicking on &#8216;ANSI Green&#8217; won't turn your session green; it will only allow you to adjust the <em>shade</em> of green used when PuTTY is instructed by the server to display green text.
 </p>
-<h3><a name="faq-outofmem"></a><a name="QA.7.3"></a>A.7.3 After trying to establish an SSH-2 connection, PuTTY says &#8216;<a name="i28"></a>Out of memory&#8217; and dies.</h3>
+<h3><a name="faq-outofmem"></a><a name="QA.7.3"></a>A.7.3 After trying to establish an SSH-2 connection, PuTTY says &#8216;<a name="i31"></a>Out of memory&#8217; and dies.</h3>
 <p>
 If this happens just while the connection is starting up, this often indicates that for some reason the client and server have failed to establish a session encryption key. Somehow, they have performed calculations that should have given each of them the same key, but have ended up with different keys; so data encrypted by one and decrypted by the other looks like random garbage.
 </p>
@@ -518,9 +563,9 @@ This causes an &#8216;out of memory&#8217; error because the first encrypted dat
 <p>
 If this happens to you, it is quite likely to still be a PuTTY bug and you should report it (although it might be a bug in your SSH server instead); but it doesn't necessarily mean you've actually run out of memory.
 </p>
-<h3><a name="faq-outofmem2"></a><a name="QA.7.4"></a>A.7.4 When attempting a file transfer, either PSCP or PSFTP says &#8216;<a name="i29"></a>Out of memory&#8217; and dies.</h3>
+<h3><a name="faq-outofmem2"></a><a name="QA.7.4"></a>A.7.4 When attempting a file transfer, either PSCP or PSFTP says &#8216;<a name="i32"></a>Out of memory&#8217; and dies.</h3>
 <p>
-This is almost always caused by your <a name="i30"></a>login scripts on the server generating output. PSCP or PSFTP will receive that output when they were expecting to see the start of a file transfer protocol, and they will attempt to interpret the output as file-transfer protocol. This will usually lead to an &#8216;out of memory&#8217; error for much the same reasons as given in <a href="#faq-outofmem">question A.7.3</a>.
+This is almost always caused by your <a name="i33"></a>login scripts on the server generating output. PSCP or PSFTP will receive that output when they were expecting to see the start of a file transfer protocol, and they will attempt to interpret the output as file-transfer protocol. This will usually lead to an &#8216;out of memory&#8217; error for much the same reasons as given in <a href="#faq-outofmem">question A.7.3</a>.
 </p>
 <p>
 This is a setup problem in your account on your server, <em>not</em> a PSCP/PSFTP bug. Your login scripts should <em>never</em> generate output during non-interactive sessions; secure file transfer is not the only form of remote access that will break if they do.
@@ -534,14 +579,14 @@ The throughput of PSFTP 0.54 should be much better than 0.53b and prior; we've a
 </p>
 <h3><a name="faq-bce"></a><a name="QA.7.6"></a>A.7.6 When I run full-colour applications, I see areas of black space where colour ought to be, or vice versa.</h3>
 <p>
-You almost certainly need to change the &#8216;Use <a name="i31"></a>background colour to erase screen&#8217; setting in the Terminal panel. If there is too much black space (the commoner situation), you should enable it, while if there is too much colour, you should disable it. (See <a href="Chapter4.html#config-erase">section 4.3.5</a>.)
+You almost certainly need to change the &#8216;Use <a name="i34"></a>background colour to erase screen&#8217; setting in the Terminal panel. If there is too much black space (the commoner situation), you should enable it, while if there is too much colour, you should disable it. (See <a href="Chapter4.html#config-erase">section 4.3.5</a>.)
 </p>
 <p>
 In old versions of PuTTY, this was disabled by default, and would not take effect until you reset the terminal (see <a href="#faq-resetterm">question A.7.7</a>). Since 0.54, it is enabled by default, and changes take effect immediately.
 </p>
 <h3><a name="faq-resetterm"></a><a name="QA.7.7"></a>A.7.7 When I change some terminal settings, nothing happens.</h3>
 <p>
-Some of the terminal options (notably <a name="i32"></a>Auto Wrap and background-colour screen erase) actually represent the <em>default</em> setting, rather than the currently active setting. The server can send sequences that modify these options in mid-session, but when the terminal is reset (by server action, or by you choosing &#8216;Reset Terminal&#8217; from the System menu) the defaults are restored.
+Some of the terminal options (notably <a name="i35"></a>Auto Wrap and background-colour screen erase) actually represent the <em>default</em> setting, rather than the currently active setting. The server can send sequences that modify these options in mid-session, but when the terminal is reset (by server action, or by you choosing &#8216;Reset Terminal&#8217; from the System menu) the defaults are restored.
 </p>
 <p>
 In versions 0.53b and prior, if you change one of these options in the middle of a session, you will find that the change does not immediately take effect. It will only take effect once you reset the terminal.
@@ -549,17 +594,17 @@ In versions 0.53b and prior, if you change one of these options in the middle of
 <p>
 In version 0.54, the behaviour has changed - changes to these settings take effect immediately.
 </p>
-<h3><a name="faq-idleout"></a><a name="QA.7.8"></a>A.7.8 My PuTTY sessions unexpectedly close after they are <a name="i33"></a>idle for a while.</h3>
+<h3><a name="faq-idleout"></a><a name="QA.7.8"></a>A.7.8 My PuTTY sessions unexpectedly close after they are <a name="i36"></a>idle for a while.</h3>
 <p>
-Some types of <a name="i34"></a>firewall, and almost any router doing Network Address Translation (<a name="i35"></a>NAT, also known as IP masquerading), will forget about a connection through them if the connection does nothing for too long. This will cause the connection to be rudely cut off when contact is resumed.
+Some types of <a name="i37"></a>firewall, and almost any router doing Network Address Translation (<a name="i38"></a>NAT, also known as IP masquerading), will forget about a connection through them if the connection does nothing for too long. This will cause the connection to be rudely cut off when contact is resumed.
 </p>
 <p>
 You can try to combat this by telling PuTTY to send <em>keepalives</em>: packets of data which have no effect on the actual session, but which reassure the router or firewall that the network connection is still active and worth remembering about.
 </p>
 <p>
-Keepalives don't solve everything, unfortunately; although they cause greater robustness against this sort of router, they can also cause a <em>loss</em> of robustness against network dropouts. See <a href="Chapter4.html#config-keepalive">section 4.13.1</a> in the documentation for more discussion of this.
+Keepalives don't solve everything, unfortunately; although they cause greater robustness against this sort of router, they can also cause a <em>loss</em> of robustness against network dropouts. See <a href="Chapter4.html#config-keepalive">section 4.14.1</a> in the documentation for more discussion of this.
 </p>
-<h3><a name="faq-timeout"></a><a name="QA.7.9"></a>A.7.9 PuTTY's network connections time out too quickly when <a name="i36"></a>network connectivity is temporarily lost.</h3>
+<h3><a name="faq-timeout"></a><a name="QA.7.9"></a>A.7.9 PuTTY's network connections time out too quickly when <a name="i39"></a>network connectivity is temporarily lost.</h3>
 <p>
 This is a Windows problem, not a PuTTY problem. The timeout value can't be set on per application or per session basis. To increase the TCP timeout globally, you need to tinker with the Registry.
 </p>
@@ -594,21 +639,21 @@ This is designed behaviour; when PuTTY receives the character Control-E from the
 <p>
 To mitigate the effects, you could configure the answerback string to be empty (see <a href="Chapter4.html#config-answerback">section 4.3.7</a>); but writing binary files to your terminal is likely to cause various other unpleasant behaviour, so this is only a small remedy.
 </p>
-<h3><a name="faq-wintitle"></a><a name="QA.7.11"></a>A.7.11 When I <code>cat</code> a binary file, my <a name="i37"></a>window title changes to a nonsense string.</h3>
+<h3><a name="faq-wintitle"></a><a name="QA.7.11"></a>A.7.11 When I <code>cat</code> a binary file, my <a name="i40"></a>window title changes to a nonsense string.</h3>
 <p>
 Don't do that, then.
 </p>
 <p>
 It is designed behaviour that PuTTY should have the ability to adjust the window title on instructions from the server. Normally the control sequence that does this should only be sent deliberately, by programs that know what they are doing and intend to put meaningful text in the window title. Writing a binary file to your terminal runs the risk of sending the same control sequence by accident, and cause unexpected changes in the window title. Don't do it.
 </p>
-<h3><a name="faq-password-fails"></a><a name="QA.7.12"></a>A.7.12 My <a name="i38"></a>keyboard stops working once PuTTY displays the <a name="i39"></a>password prompt.</h3>
+<h3><a name="faq-password-fails"></a><a name="QA.7.12"></a>A.7.12 My <a name="i41"></a>keyboard stops working once PuTTY displays the <a name="i42"></a>password prompt.</h3>
 <p>
 No, it doesn't. PuTTY just doesn't display the password you type, so that someone looking at your screen can't see what it is.
 </p>
 <p>
 Unlike the Windows login prompts, PuTTY doesn't display the password as a row of asterisks either. This is so that someone looking at your screen can't even tell how <em>long</em> your password is, which might be valuable information.
 </p>
-<h3><a name="faq-keyboard"></a><a name="QA.7.13"></a>A.7.13 One or more <a name="i40"></a><a name="i41"></a>function keys don't do what I expected in a server-side application.</h3>
+<h3><a name="faq-keyboard"></a><a name="QA.7.13"></a>A.7.13 One or more <a name="i43"></a><a name="i44"></a>function keys don't do what I expected in a server-side application.</h3>
 <p>
 If you've already tried all the relevant options in the PuTTY Keyboard panel, you may need to mail the PuTTY maintainers and ask.
 </p>
@@ -619,7 +664,7 @@ It is <em>not</em> usually helpful just to tell us which application, which serv
 PuTTY responds to function key presses by sending a sequence of control characters to the server. If a function key isn't doing what you expect, it's likely that the character sequence your application is expecting to receive is not the same as the one PuTTY is sending. Therefore what we really need to know is <em>what</em> sequence the application is expecting.
 </p>
 <p>
-The simplest way to investigate this is to find some other terminal environment, in which that function key <em>does</em> work; and then investigate what sequence the function key is sending in that situation. One reasonably easy way to do this on a <a name="i42"></a>Unix system is to type the command <a name="i43"></a><code>cat</code>, and then press the function key. This is likely to produce output of the form <code>^[[11~</code>. You can also do this in PuTTY, to find out what sequence the function key is producing in that. Then you can mail the PuTTY maintainers and tell us &#8216;I wanted the F1 key to send <code>^[[11~</code>, but instead it's sending <code>^[OP</code>, can this be done?&#8217;, or something similar.
+The simplest way to investigate this is to find some other terminal environment, in which that function key <em>does</em> work; and then investigate what sequence the function key is sending in that situation. One reasonably easy way to do this on a <a name="i45"></a>Unix system is to type the command <a name="i46"></a><code>cat</code>, and then press the function key. This is likely to produce output of the form <code>^[[11~</code>. You can also do this in PuTTY, to find out what sequence the function key is producing in that. Then you can mail the PuTTY maintainers and tell us &#8216;I wanted the F1 key to send <code>^[[11~</code>, but instead it's sending <code>^[OP</code>, can this be done?&#8217;, or something similar.
 </p>
 <p>
 You should still read the <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/feedback.html">Feedback page</a> on the PuTTY website (also provided as <a href="AppendixB.html#feedback">appendix B</a> in the manual), and follow the guidelines contained in that.
@@ -631,12 +676,12 @@ It's likely that you've generated an SSH protocol 2 key with PuTTYgen, but you'r
 <p>
 To connect using SSH-2 to a server that supports both versions, you need to change the configuration from the default (see <a href="#faq-ssh2">question A.2.1</a>).
 </p>
-<h3><a name="faq-rh8-utf8"></a><a name="QA.7.15"></a>A.7.15 When I'm connected to a <a name="i44"></a>Red Hat Linux 8.0 system, some characters don't display properly.</h3>
+<h3><a name="faq-rh8-utf8"></a><a name="QA.7.15"></a>A.7.15 When I'm connected to a <a name="i47"></a>Red Hat Linux 8.0 system, some characters don't display properly.</h3>
 <p>
 A common complaint is that hyphens in man pages show up as a-acute.
 </p>
 <p>
-With release 8.0, Red Hat appear to have made <a name="i45"></a>UTF-8 the default character set. There appears to be no way for terminal emulators such as PuTTY to know this (as far as we know, the appropriate escape sequence to switch into UTF-8 mode isn't sent).
+With release 8.0, Red Hat appear to have made <a name="i48"></a>UTF-8 the default character set. There appears to be no way for terminal emulators such as PuTTY to know this (as far as we know, the appropriate escape sequence to switch into UTF-8 mode isn't sent).
 </p>
 <p>
 A fix is to configure sessions to RH8 systems to use UTF-8 translation - see <a href="Chapter4.html#config-charset">section 4.10.1</a> in the documentation. (Note that if you use &#8216;Change Settings&#8217;, changes may not take place immediately - see <a href="#faq-resetterm">question A.7.7</a>.)
@@ -646,7 +691,7 @@ If you really want to change the character set used by the server, the right pla
 </p>
 <h3><a name="faq-screen"></a><a name="QA.7.16"></a>A.7.16 Since I upgraded to PuTTY 0.54, the scrollback has stopped working when I run <code>screen</code>.</h3>
 <p>
-PuTTY's terminal emulator has always had the policy that when the &#8216;<a name="i46"></a>alternate screen&#8217; is in use, nothing is added to the scrollback. This is because the usual sorts of programs which use the alternate screen are things like text editors, which tend to scroll back and forth in the same document a lot; so (a) they would fill up the scrollback with a large amount of unhelpfully disordered text, and (b) they contain their <em>own</em> method for the user to scroll back to the bit they were interested in. We have generally found this policy to do the Right Thing in almost all situations.
+PuTTY's terminal emulator has always had the policy that when the &#8216;<a name="i49"></a>alternate screen&#8217; is in use, nothing is added to the scrollback. This is because the usual sorts of programs which use the alternate screen are things like text editors, which tend to scroll back and forth in the same document a lot; so (a) they would fill up the scrollback with a large amount of unhelpfully disordered text, and (b) they contain their <em>own</em> method for the user to scroll back to the bit they were interested in. We have generally found this policy to do the Right Thing in almost all situations.
 </p>
 <p>
 Unfortunately, <code>screen</code> is one exception: it uses the alternate screen, but it's still usually helpful to have PuTTY's scrollback continue working. The simplest solution is to go to the Features control panel and tick &#8216;Disable switching to alternate terminal screen&#8217;. (See <a href="Chapter4.html#config-features-altscreen">section 4.6.4</a> for more details.) Alternatively, you can tell <code>screen</code> itself not to use the alternate screen: the <a href="http://www4.informatik.uni-erlangen.de/~jnweiger/screen-faq.html"><code>screen</code> FAQ</a> suggests adding the line &#8216;<code>termcapinfo xterm ti@:te@</code>&#8217; to your <code>.screenrc</code> file.
@@ -654,9 +699,9 @@ Unfortunately, <code>screen</code> is one exception: it uses the alternate scree
 <p>
 The reason why this only started to be a problem in 0.54 is because <code>screen</code> typically uses an unusual control sequence to switch to the alternate screen, and previous versions of PuTTY did not support this sequence.
 </p>
-<h3><a name="faq-alternate-localhost"></a><a name="QA.7.17"></a>A.7.17 Since I upgraded <a name="i47"></a>Windows XP to Service Pack 2, I can't use addresses like <code>127.0.0.2</code>.</h3>
+<h3><a name="faq-alternate-localhost"></a><a name="QA.7.17"></a>A.7.17 Since I upgraded <a name="i50"></a>Windows XP to Service Pack 2, I can't use addresses like <code>127.0.0.2</code>.</h3>
 <p>
-Some people who ask PuTTY to listen on <a name="i48"></a>localhost addresses other than <code>127.0.0.1</code> to forward services such as <a name="i49"></a>SMB and <a name="i50"></a>Windows Terminal Services have found that doing so no longer works since they upgraded to WinXP SP2.
+Some people who ask PuTTY to listen on <a name="i51"></a>localhost addresses other than <code>127.0.0.1</code> to forward services such as <a name="i52"></a>SMB and <a name="i53"></a>Windows Terminal Services have found that doing so no longer works since they upgraded to WinXP SP2.
 </p>
 <p>
 This is apparently an issue with SP2 that is acknowledged by Microsoft in MS Knowledge Base article <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;884020">884020</a>. The article links to a fix you can download.
@@ -674,7 +719,7 @@ psftp&gt; <em>get filename.ext</em>
 /dir1/dir2filename.ext: no such file or directory
 </code></pre>
 <p>
-This is not a bug in PSFTP. There is a known bug in some versions of portable <a name="i51"></a>OpenSSH (<a href="http://bugzilla.mindrot.org/show_bug.cgi?id=697">bug 697</a>) that causes these symptoms; it appears to have been introduced around 3.7.x. It manifests only on certain platforms (AIX is what has been reported to us).
+This is not a bug in PSFTP. There is a known bug in some versions of portable <a name="i54"></a>OpenSSH (<a href="http://bugzilla.mindrot.org/show_bug.cgi?id=697">bug 697</a>) that causes these symptoms; it appears to have been introduced around 3.7.x. It manifests only on certain platforms (AIX is what has been reported to us).
 </p>
 <p>
 There is a patch for OpenSSH attached to that bug; it's also fixed in recent versions of portable OpenSSH (from around 3.8).
@@ -683,23 +728,33 @@ There is a patch for OpenSSH attached to that bug; it's also fixed in recent ver
 <p>
 In the documentation for PuTTY 0.53 and 0.53b, we mentioned that we'd like to hear about any occurrences of this error. Since the release of PuTTY 0.54, however, we've been convinced that this error doesn't indicate that PuTTY's doing anything wrong, and we don't need to hear about further occurrences. See <a href="Chapter10.html#errors-connaborted">section 10.15</a> for our current documentation of this error.
 </p>
-<h3><a name="faq-rekey"></a><a name="QA.7.20"></a>A.7.20 My SSH-2 session <a name="i52"></a>locks up for a few seconds every so often.</h3>
+<h3><a name="faq-rekey"></a><a name="QA.7.20"></a>A.7.20 My SSH-2 session <a name="i55"></a>locks up for a few seconds every so often.</h3>
 <p>
-Recent versions of PuTTY automatically initiate <a name="i53"></a>repeat key exchange once per hour, to improve session security. If your client or server machine is slow, you may experience this as a delay of anything up to thirty seconds or so.
+Recent versions of PuTTY automatically initiate <a name="i56"></a>repeat key exchange once per hour, to improve session security. If your client or server machine is slow, you may experience this as a delay of anything up to thirty seconds or so.
 </p>
 <p>
-These <a name="i54"></a>delays are inconvenient, but they are there for your protection. If they really cause you a problem, you can choose to turn off periodic rekeying using the &#8216;Kex&#8217; configuration panel (see <a href="Chapter4.html#config-ssh-kex">section 4.19</a>), but be aware that you will be sacrificing security for this. (Falling back to SSH-1 would also remove the delays, but would lose a <em>lot</em> more security still. We do not recommend it.)
+These <a name="i57"></a>delays are inconvenient, but they are there for your protection. If they really cause you a problem, you can choose to turn off periodic rekeying using the &#8216;Kex&#8217; configuration panel (see <a href="Chapter4.html#config-ssh-kex">section 4.20</a>), but be aware that you will be sacrificing security for this. (Falling back to SSH-1 would also remove the delays, but would lose a <em>lot</em> more security still. We do not recommend it.)
 </p>
 <h3><a name="faq-xpwontrun"></a><a name="QA.7.21"></a>A.7.21 PuTTY fails to start up. Windows claims that &#8216;the application configuration is incorrect&#8217;.</h3>
 <p>
-This is caused by a bug in certain versions of <a name="i55"></a>Windows XP which is triggered by PuTTY 0.58. This was fixed in 0.59. The <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/wishlist/xp-wont-run">&#8216;xp-wont-run&#8217;</a> entry in PuTTY's wishlist has more details.
+This is caused by a bug in certain versions of <a name="i58"></a>Windows XP which is triggered by PuTTY 0.58. This was fixed in 0.59. The <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/wishlist/xp-wont-run">&#8216;xp-wont-run&#8217;</a> entry in PuTTY's wishlist has more details.
 </p>
-<h3><a name="faq-system32"></a><a name="QA.7.22"></a>A.7.22 When I put 32-bit PuTTY in <code>C:\WINDOWS\<a name="i56"></a>SYSTEM32</code> on my <a name="i57"></a>64-bit Windows system, <a name="i58"></a>&#8216;Duplicate Session&#8217; doesn't work.</h3>
+<h3><a name="faq-system32"></a><a name="QA.7.22"></a>A.7.22 When I put 32-bit PuTTY in <code>C:\WINDOWS\<a name="i59"></a>SYSTEM32</code> on my <a name="i60"></a>64-bit Windows system, <a name="i61"></a>&#8216;Duplicate Session&#8217; doesn't work.</h3>
 <p>
 The short answer is not to put the PuTTY executables in that location.
 </p>
 <p>
-On 64-bit systems, <code>C:\WINDOWS\SYSTEM32</code> is intended to contain only 64-bit binaries; Windows' 32-bit binaries live in <code>C:\WINDOWS\SYSWOW64</code>. When a 32-bit PuTTY executable runs on a 64-bit system, it cannot by default see the &#8216;real&#8217; <code>C:\WINDOWS\SYSTEM32</code> at all, because the <a href="http://msdn.microsoft.com/en-us/library/aa384187(v=vs.85).aspx">File System Redirector</a> arranges that the running program sees the appropriate kind of binaries in <code>SYSTEM32</code>. Thus, operations in the PuTTY suite that involve it accessing its own executables, such as <a name="i59"></a>&#8216;New Session&#8217; and &#8216;Duplicate Session&#8217;, will not work.
+On 64-bit systems, <code>C:\WINDOWS\SYSTEM32</code> is intended to contain only 64-bit binaries; Windows' 32-bit binaries live in <code>C:\WINDOWS\SYSWOW64</code>. When a 32-bit PuTTY executable runs on a 64-bit system, it cannot by default see the &#8216;real&#8217; <code>C:\WINDOWS\SYSTEM32</code> at all, because the <a href="http://msdn.microsoft.com/en-us/library/aa384187(v=vs.85).aspx">File System Redirector</a> arranges that the running program sees the appropriate kind of binaries in <code>SYSTEM32</code>. Thus, operations in the PuTTY suite that involve it accessing its own executables, such as <a name="i62"></a>&#8216;New Session&#8217; and &#8216;Duplicate Session&#8217;, will not work.
+</p>
+<h3><a name="faq-iutf8"></a><a name="QA.7.23"></a>A.7.23 After I upgraded PuTTY to 0.68, I can no longer connect to my embedded device or appliance.</h3>
+<p>
+If your SSH server has started unexpectedly closing SSH connections after you enter your password, and it worked before 0.68, you may have a buggy server that objects to certain SSH protocol extensions.
+</p>
+<p>
+The SSH protocol recently gained a new &#8216;terminal mode&#8217;, <code>IUTF8</code>, which PuTTY sends by default; see <a href="Chapter4.html#config-ttymodes">section 4.25.2</a>. This is the first new terminal mode since the SSH-2 protocol was defined. While servers are supposed to ignore modes they don't know about, some buggy servers will unceremoniously close the connection if they see anything they don't recognise. SSH servers in embedded devices, network appliances, and the like seem to disproportionately have this bug.
+</p>
+<p>
+If you think you have such a server, from 0.69 onwards you can disable sending of the <code>IUTF8</code> mode: on the SSH / TTY panel, select <code>IUTF8</code> on the list, select &#8216;Nothing&#8217;, and press &#8216;Set&#8217;. (It's not possible to disable sending this mode in 0.68.)
 </p>
 <h2><a name="faq-secure"></a><a name="SA.8"></a>A.8 Security questions</h2>
 <h3><a name="faq-publicpc"></a><a name="QA.8.1"></a>A.8.1 Is it safe for me to download PuTTY and use it on a public PC?</h3>
@@ -709,17 +764,17 @@ It depends on whether you trust that PC. If you don't trust the public PC, don't
 <p>
 If you do trust the PC, then it's probably OK to use PuTTY on it (but if you don't trust the network, then the PuTTY download might be tampered with, so it would be better to carry PuTTY with you on a USB stick).
 </p>
-<h3><a name="faq-cleanup"></a><a name="QA.8.2"></a>A.8.2 What does PuTTY leave on a system? How can I <a name="i60"></a>clean up after it?</h3>
+<h3><a name="faq-cleanup"></a><a name="QA.8.2"></a>A.8.2 What does PuTTY leave on a system? How can I <a name="i63"></a>clean up after it?</h3>
 <p>
 PuTTY will leave some Registry entries, and a random seed file, on the PC (see <a href="#faq-settings">question A.5.2</a>). Windows 7 and up also remember some information about recently launched sessions for the &#8216;jump list&#8217; feature.
 </p>
 <p>
-If you are using PuTTY on a public PC, or somebody else's PC, you might want to clean this information up when you leave. You can do that automatically, by running the command <code>putty -cleanup</code>. See <a href="Chapter3.html#using-cleanup">section 3.8.2</a> in the documentation for more detail. (Note that this only removes settings for the currently logged-in user on <a name="i61"></a>multi-user systems.)
+If you are using PuTTY on a public PC, or somebody else's PC, you might want to clean this information up when you leave. You can do that automatically, by running the command <code>putty -cleanup</code>. See <a href="Chapter3.html#using-cleanup">section 3.8.2</a> in the documentation for more detail. (Note that this only removes settings for the currently logged-in user on <a name="i64"></a>multi-user systems.)
 </p>
 <p>
 If PuTTY was installed from the installer package, it will also appear in &#8216;Add/Remove Programs&#8217;. Current versions of the installer do not offer to remove the above-mentioned items, so if you want them removed you should run <code>putty -cleanup</code> before uninstalling.
 </p>
-<h3><a name="faq-dsa"></a><a name="QA.8.3"></a>A.8.3 How come PuTTY now supports <a name="i62"></a>DSA, when the website used to say how insecure it was?</h3>
+<h3><a name="faq-dsa"></a><a name="QA.8.3"></a>A.8.3 How come PuTTY now supports <a name="i65"></a>DSA, when the website used to say how insecure it was?</h3>
 <p>
 DSA has a major weakness <em>if badly implemented</em>: it relies on a random number generator to far too great an extent. If the random number generator produces a number an attacker can predict, the DSA private key is exposed - meaning that the attacker can log in as you on all systems that accept that key.
 </p>
@@ -901,7 +956,10 @@ The PuTTY download page contains more than one version of the software. There's 
 So if you've downloaded the release version of the actual program, you need the release version of the checksums too, otherwise you will see a mismatch. Similarly, the development snapshot binaries go with the development snapshot checksums, and so on. (We've colour-coded the download page in an effort to reduce this confusion a bit.)
 </p>
 <p>
-If you have double-checked that, and you still think there's a real mismatch, then please send us a report carefully quoting everything relevant:
+Another thing to watch out for: as of 0.71, executables like <code>putty.exe</code> come in two flavours for each platform: the standalone versions on the website, each of which contains embedded help, and the versions installed by the installer, which use a separate help file also in the installer. We provide checksums for both; the latter are indicated with &#8216;<code>(installer version)</code>&#8217; after the filename.
+</p>
+<p>
+If you have double-checked all that, and you still think there's a real mismatch, then please send us a report carefully quoting everything relevant:
 </p>
 <ul><li>
 the exact URL you got your binary from
@@ -917,7 +975,7 @@ the checksum that file says the binary should have.
 </li>
 </ul>
 <h2><a name="faq-misc"></a><a name="SA.10"></a>A.10 Miscellaneous questions</h2>
-<h3><a name="faq-openssh"></a><a name="QA.10.1"></a>A.10.1 Is PuTTY a port of <a name="i63"></a>OpenSSH, or based on OpenSSH or OpenSSL?</h3>
+<h3><a name="faq-openssh"></a><a name="QA.10.1"></a>A.10.1 Is PuTTY a port of <a name="i66"></a>OpenSSH, or based on OpenSSH or OpenSSL?</h3>
 <p>
 No, it isn't. PuTTY is almost completely composed of code written from scratch for PuTTY. The only code we share with OpenSSH is the detector for SSH-1 CRC compensation attacks, written by CORE SDI S.A; we share no code at all with OpenSSL.
 </p>
@@ -938,5 +996,5 @@ Exactly like the English word &#8216;putty&#8217;, which we pronounce /&#712;p&#
 </p>
 
 <hr><p>If you want to provide feedback on this manual or on the PuTTY tools themselves, see the <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/feedback.html">Feedback page</a>.</p><address>
-[PuTTY release 0.70]</address></body>
+[PuTTY release 0.74]</address></body>
 </html>

@@ -7,12 +7,12 @@ and PuTTYgen.
 
 _Note to Unix users:_ this manual currently primarily documents the Windows
 versions of the PuTTY utilities. Some options are therefore mentioned
-that are absent from the Unix version; the Unix version has features not
-described here; and the pterm and command-line puttygen utilities are not
-described at all. The only Unix-specific documentation that currently
-exists is the man pages.
+that are absent from the Unix version; the Unix version has features
+not described here; and the pterm and command-line puttygen and pageant
+utilities are not described at all. The only Unix-specific documentation
+that currently exists is the man pages.
 
-This manual is copyright 1997-2017 Simon Tatham. All rights reserved. You
+This manual is copyright 1997-2020 Simon Tatham. All rights reserved. You
 may distribute this documentation under the MIT licence. See appendix C for
 the licence text in full.
 
@@ -204,17 +204,32 @@ Chapter 2: Getting started with PuTTY
        fingerprint, you should make sure the one PuTTY shows you is on the
        list, but it doesn't matter which one it is.)
 
-       See section 4.20 for advanced options for managing host keys.
+       See section 4.21 for advanced options for managing host keys.
 
    2.3 Logging in
 
        After you have connected, and perhaps verified the server's host
        key, you will be asked to log in, probably using a username and a
        password. Your system administrator should have provided you with
-       these. Enter the username and the password, and the server should
-       grant you access and begin your session. If you have mistyped your
-       password, most servers will give you several chances to get it
-       right.
+       these. (If, instead, your system administrator has asked you to
+       provide, or provided you with, a `public key' or `key file', see
+       chapter 8.)
+
+       PuTTY will display a text window (the `terminal window' - it will
+       have a black background unless you've changed the defaults), and
+       prompt you to type your username and password into that window.
+       (These prompts will include the PuTTY icon, to distinguish them from
+       any text sent by the server in the same window.)
+
+       Enter the username and the password, and the server should grant you
+       access and begin your session. If you have mistyped your password,
+       most servers will give you several chances to get it right.
+
+       While you are typing your password, you will not usually see the
+       cursor moving in the window, but PuTTY _is_ registering what you
+       type, and will send it when you press Return. (It works this way to
+       avoid revealing the length of your password to anyone watching your
+       screen.)
 
        If you are using SSH, be careful not to type your username wrongly,
        because you will not have a chance to correct it after you press
@@ -274,38 +289,43 @@ Chapter 3: Using PuTTY
        that you can paste (for example) URLs into a web browser, or paste
        from a word processor or spreadsheet into your terminal session.
 
-       PuTTY's copy and paste works entirely with the mouse. In order to
-       copy text to the clipboard, you just click the left mouse button in
-       the terminal window, and drag to select text. When you let go of the
-       button, the text is _automatically_ copied to the clipboard. You
-       do not need to press Ctrl-C or Ctrl-Ins; in fact, if you do press
-       Ctrl-C, PuTTY will send a Ctrl-C character down your session to the
-       server where it will probably cause a process to be interrupted.
+       By default, PuTTY's copy and paste works entirely with the mouse.
+       (This will be familiar to people who have used `xterm' on Unix.) In
+       order to copy text to the clipboard, you just click the left mouse
+       button in the terminal window, and drag to select text. When you
+       let go of the button, the text is _automatically_ copied to the
+       clipboard. You do not need to press Ctrl-C or Ctrl-Ins; in fact, if
+       you do press Ctrl-C, PuTTY will send a Ctrl-C character down your
+       session to the server where it will probably cause a process to be
+       interrupted.
 
-       Pasting is done using the right button (or the middle mouse
-       button, if you have a three-button mouse and have set it up; see
-       section 4.11.2). (Pressing Shift-Ins, or selecting `Paste' from
+       Pasting into PuTTY is done using the right button (or the middle
+       mouse button, if you have a three-button mouse and have set it up;
+       see section 4.11.1). (Pressing Shift-Ins, or selecting `Paste' from
        the Ctrl+right-click context menu, have the same effect.) When you
        click the right mouse button, PuTTY will read whatever is in the
-       Windows clipboard and paste it into your session, _exactly_ as if it
-       had been typed at the keyboard. (Therefore, be careful of pasting
-       formatted text into an editor that does automatic indenting; you may
-       find that the spaces pasted from the clipboard plus the spaces added
-       by the editor add up to too many spaces and ruin the formatting.
-       There is nothing PuTTY can do about this.)
+       Windows clipboard and paste it into your session. By default, this
+       behaves _exactly_ as if the clipboard contents had been typed at
+       the keyboard; therefore, be careful of pasting formatted text into
+       an editor that does automatic indenting, as you may find that the
+       spaces pasted from the clipboard plus the spaces added by the editor
+       add up to too many spaces and ruin the formatting. (Some remote
+       applications can ask PuTTY to identify text that is being pasted, to
+       avoid this sort of problem; but if your application does not, there
+       is nothing PuTTY can do to avoid this.)
 
        If you double-click the left mouse button, PuTTY will select a whole
        word. If you double-click, hold down the second click, and drag the
        mouse, PuTTY will select a sequence of whole words. (You can adjust
        precisely what PuTTY considers to be part of a word; see section
-       4.11.5.) If you _triple_-click, or triple-click and drag, then PuTTY
+       4.12.1.) If you _triple_-click, or triple-click and drag, then PuTTY
        will select a whole line or sequence of lines.
 
        If you want to select a rectangular region instead of selecting to
        the end of each line, you can do this by holding down Alt when you
        make your selection. You can also configure rectangular selection to
        be the default, and then holding down Alt gives the normal behaviour
-       instead: see section 4.11.4 for details.
+       instead: see section 4.11.3 for details.
 
        (In some Unix environments, Alt+drag is intercepted by the window
        manager. Shift+Alt+drag should work for rectangular selection as
@@ -318,11 +338,23 @@ Chapter 3: Using PuTTY
        and you can pick up the nearest end of the selection and drag it to
        somewhere else.
 
+       If you are running PuTTY itself on Unix (not just using it to
+       connect to a Unix system from Windows), by default you will likely
+       have to use similar mouse actions in other applications to paste the
+       text you copied from PuTTY, and to copy text for pasting into PuTTY;
+       actions like Ctrl-C and Ctrl-V will likely not behave as you expect.
+       Section 4.11.4 explains why this is, and how you can change the
+       behaviour. (On Windows there is only a single selection shared with
+       other applications, so this confusion does not arise.)
+
        It's possible for the server to ask to handle mouse clicks in the
        PuTTY window itself. If this happens, the mouse pointer will turn
        into an arrow, and using the mouse to copy and paste will only work
-       if you hold down Shift. See section 4.6.2 and section 4.11.3 for
+       if you hold down Shift. See section 4.6.2 and section 4.11.2 for
        details of this feature and how to configure it.
+
+       You can customise much of this behaviour, for instance to enable
+       copy and paste from the keyboard; see section 4.11.
 
  3.1.2 Scrolling the screen back
 
@@ -332,10 +364,11 @@ Chapter 3: Using PuTTY
        look for it, you can use the scrollbar on the right side of the
        window to look back up the session history and find it again.
 
-       As well as using the scrollbar, you can also page the scrollback
-       up and down by pressing Shift-PgUp and Shift-PgDn. You can scroll
-       a line at a time using Ctrl-PgUp and Ctrl-PgDn. These are still
-       available if you configure the scrollbar to be invisible.
+       As well as using the scrollbar, you can also page the scrollback up
+       and down by pressing Shift-PgUp and Shift-PgDn. You can scroll a
+       line at a time using Ctrl-PgUp and Ctrl-PgDn, or to the top/bottom
+       of the scrollback with Ctrl-Shift-PgUp and Ctrl-Shift-PgDn. These
+       are still available if you configure the scrollbar to be invisible.
 
        By default the last 2000 lines scrolled off the top are preserved
        for you to look at. You can increase (or decrease) this value using
@@ -384,45 +417,6 @@ Chapter 3: Using PuTTY
        The `break' signal can also be invoked from the keyboard with Ctrl-
        Break.
 
-       The following special commands are available in Telnet:
-
-        -  Are You There
-
-        -  Break
-
-        -  Synch
-
-        -  Erase Character
-
-           PuTTY can also be configured to send this when the Backspace key
-           is pressed; see section 4.16.3.
-
-        -  Erase Line
-
-        -  Go Ahead
-
-        -  No Operation
-
-           Should have no effect.
-
-        -  Abort Process
-
-        -  Abort Output
-
-        -  Interrupt Process
-
-           PuTTY can also be configured to send this when Ctrl-C is typed;
-           see section 4.16.3.
-
-        -  Suspend Process
-
-           PuTTY can also be configured to send this when Ctrl-Z is typed;
-           see section 4.16.3.
-
-        -  End Of Record
-
-        -  End Of File
-
        In an SSH connection, the following special commands are available:
 
         -  IGNORE message
@@ -433,7 +427,7 @@ Chapter 3: Using PuTTY
 
            Only available in SSH-2. Forces a repeat key exchange
            immediately (and resets associated timers and counters). For
-           more information about repeat key exchanges, see section 4.19.2.
+           more information about repeat key exchanges, see section 4.20.2.
 
         -  Cache new host key type
 
@@ -446,7 +440,7 @@ Chapter 3: Using PuTTY
            of the connection to cross-certify the new key). That key will
            be used for the rest of the current session; it may not actually
            be used for future sessions, depending on your preferences (see
-           section 4.20.1).
+           section 4.21.1).
 
            Normally, PuTTY will carry on using a host key it already knows,
            even if the server offers key formats that PuTTY would otherwise
@@ -467,6 +461,45 @@ Chapter 3: Using PuTTY
 
            Only available in SSH-2, and only during a session. Sends
            various POSIX signals. Not honoured by all servers.
+
+       The following special commands are available in Telnet:
+
+        -  Are You There
+
+        -  Break
+
+        -  Synch
+
+        -  Erase Character
+
+           PuTTY can also be configured to send this when the Backspace key
+           is pressed; see section 4.17.3.
+
+        -  Erase Line
+
+        -  Go Ahead
+
+        -  No Operation
+
+           Should have no effect.
+
+        -  Abort Process
+
+        -  Abort Output
+
+        -  Interrupt Process
+
+           PuTTY can also be configured to send this when Ctrl-C is typed;
+           see section 4.17.3.
+
+        -  Suspend Process
+
+           PuTTY can also be configured to send this when Ctrl-Z is typed;
+           see section 4.17.3.
+
+        -  End Of Record
+
+        -  End Of File
 
        With a serial connection, the only available special command is
        `Break'.
@@ -591,7 +624,7 @@ Chapter 3: Using PuTTY
        what it does do.
 
        You should then tick the `Enable X11 forwarding' box in the X11
-       panel (see section 4.25) before starting your SSH session. The `X
+       panel (see section 4.26) before starting your SSH session. The `X
        display location' box is blank by default, which means that PuTTY
        will try to use a sensible default such as `:0', which is the usual
        display location where your X server will be installed. If that
@@ -615,7 +648,7 @@ Chapter 3: Using PuTTY
        If this works, you should then be able to run X applications in the
        remote session and have them display their windows on your PC.
 
-       For more options relating to X11 forwarding, see section 4.25.
+       For more options relating to X11 forwarding, see section 4.26.
 
    3.5 Using port forwarding in SSH
 
@@ -635,7 +668,7 @@ Chapter 3: Using PuTTY
            loopback address here; see below for more details.)
 
         -  Now, before you start your SSH connection, go to the Tunnels
-           panel (see section 4.26). Make sure the `Local' radio button
+           panel (see section 4.27). Make sure the `Local' radio button
            is set. Enter the local port number into the `Source port'
            box. Enter the destination host name and port number into
            the `Destination' box, separated by a colon (for example,
@@ -680,7 +713,7 @@ Chapter 3: Using PuTTY
        SOCKS connections on the port you have specified. Most web browsers
        can be configured to connect to this SOCKS proxy service; also, you
        can forward other PuTTY connections through it by setting up the
-       Proxy control panel (see section 4.15 for details).
+       Proxy control panel (see section 4.16 for details).
 
        The source port for a forwarded connection usually does not accept
        connections from any machine except the SSH client or server machine
@@ -715,12 +748,12 @@ Chapter 3: Using PuTTY
        to obtain a fix from Microsoft in order to use addresses like
        127.0.0.5 - see question A.7.17.)
 
-       For more options relating to port forwarding, see section 4.26.
+       For more options relating to port forwarding, see section 4.27.
 
        If the connection you are forwarding over SSH is itself a second
        SSH connection made by another copy of PuTTY, you might find the
        `logical host name' configuration option useful to warn PuTTY of
-       which host key it should be expecting. See section 4.13.5 for
+       which host key it should be expecting. See section 4.14.5 for
        details of this.
 
    3.6 Making raw TCP connections
@@ -769,7 +802,7 @@ Chapter 3: Using PuTTY
        line to use (if your computer has more than one) and what speed
        (baud rate) to use when transferring data. For further configuration
        options (data bits, stop bits, parity, flow control), you can use
-       the `Serial' configuration panel (see section 4.28).
+       the `Serial' configuration panel (see section 4.29).
 
        After you start up PuTTY in serial mode, you might find that you
        have to make the first move, by sending some data out of the serial
@@ -897,12 +930,12 @@ Chapter 3: Using PuTTY
 
        These options are equivalent to the username selection box in
        the Connection panel of the PuTTY configuration box (see section
-       4.14.1).
+       4.15.1).
 
 3.8.3.5 `-L', `-R' and `-D': set up port forwardings
 
        As well as setting up port forwardings in the PuTTY configuration
-       (see section 4.26), you can also set up forwardings on the command
+       (see section 4.27), you can also set up forwardings on the command
        line. The command-line options work just like the ones in Unix `ssh'
        programs.
 
@@ -938,7 +971,7 @@ Chapter 3: Using PuTTY
 
        The `-m' option performs a similar function to the `Remote command'
        box in the SSH panel of the PuTTY configuration box (see section
-       4.18.1). However, the `-m' option expects to be given a local file
+       4.19.1). However, the `-m' option expects to be given a local file
        name, and it will read a command from that file.
 
        With some servers (particularly Unix systems), you can even put
@@ -987,7 +1020,7 @@ Chapter 3: Using PuTTY
        See chapter 9 for general information on Pageant.
 
        These options are equivalent to the agent authentication checkbox in
-       the Auth panel of the PuTTY configuration box (see section 4.22.3).
+       the Auth panel of the PuTTY configuration box (see section 4.23.3).
 
 3.8.3.10 `-A' and `-a': control agent forwarding
 
@@ -1000,7 +1033,7 @@ Chapter 3: Using PuTTY
        details.
 
        These options are equivalent to the agent forwarding checkbox in the
-       Auth panel of the PuTTY configuration box (see section 4.22.6).
+       Auth panel of the PuTTY configuration box (see section 4.23.6).
 
        These options are not available in the file transfer tools PSCP and
        PSFTP.
@@ -1013,7 +1046,7 @@ Chapter 3: Using PuTTY
        For information on X11 forwarding, see section 3.4.
 
        These options are equivalent to the X11 forwarding checkbox in the
-       X11 panel of the PuTTY configuration box (see section 4.25).
+       X11 panel of the PuTTY configuration box (see section 4.26).
 
        These options are not available in the file transfer tools PSCP and
        PSFTP.
@@ -1026,7 +1059,7 @@ Chapter 3: Using PuTTY
 
        These options are equivalent to the `Don't allocate a pseudo-
        terminal' checkbox in the SSH panel of the PuTTY configuration box
-       (see section 4.24.1).
+       (see section 4.25.1).
 
        These options are not available in the file transfer tools PSCP and
        PSFTP.
@@ -1043,7 +1076,7 @@ Chapter 3: Using PuTTY
 
        This option is equivalent to the `Don't start a shell or command at
        all' checkbox in the SSH panel of the PuTTY configuration box (see
-       section 4.18.2).
+       section 4.19.2).
 
        This option is not available in the file transfer tools PSCP and
        PSFTP.
@@ -1065,7 +1098,7 @@ Chapter 3: Using PuTTY
        You might want to use this feature if you needed to make an SSH
        connection to a target host which you can only reach by going
        through a proxy host, and rather than using port forwarding you
-       prefer to use the local proxy feature (see section 4.15.1 for more
+       prefer to use the local proxy feature (see section 4.16.1 for more
        about local proxies). In this situation you might select `Local'
        proxy type, set your local proxy command to be `plink %proxyhost -
        nc %host:%port', enter the target host name on the Session panel,
@@ -1092,7 +1125,7 @@ Chapter 3: Using PuTTY
        network. This option is only meaningful if you are using SSH.
 
        This option is equivalent to the `Enable compression' checkbox in
-       the SSH panel of the PuTTY configuration box (see section 4.18.3).
+       the SSH panel of the PuTTY configuration box (see section 4.19.3).
 
 3.8.3.16 `-1' and `-2': specify an SSH protocol version
 
@@ -1102,7 +1135,7 @@ Chapter 3: Using PuTTY
 
        These options are equivalent to selecting the SSH protocol version
        in the SSH panel of the PuTTY configuration box (see section
-       4.18.4).
+       4.19.4).
 
 3.8.3.17 `-4' and `-6': specify an Internet protocol version
 
@@ -1111,7 +1144,7 @@ Chapter 3: Using PuTTY
 
        These options are equivalent to selecting your preferred Internet
        protocol version as `IPv4' or `IPv6' in the Connection panel of the
-       PuTTY configuration box (see section 4.13.4).
+       PuTTY configuration box (see section 4.14.4).
 
 3.8.3.18 `-i': specify an SSH private key
 
@@ -1127,7 +1160,7 @@ Chapter 3: Using PuTTY
 
        This option is equivalent to the `Private key file for
        authentication' box in the Auth panel of the PuTTY configuration box
-       (see section 4.22.8).
+       (see section 4.23.8).
 
 3.8.3.19 `-loghost': specify a logical host name
 
@@ -1135,7 +1168,7 @@ Chapter 3: Using PuTTY
        telling it the name of the host you expect your connection to end up
        at (in cases where this differs from the location PuTTY thinks it's
        connecting to). It can be a plain host name, or a host name followed
-       by a colon and a port number. See section 4.13.5 for more detail on
+       by a colon and a port number. See section 4.14.5 for more detail on
        this.
 
 3.8.3.20 `-hostkey': manually specify an expected host key
@@ -1144,7 +1177,7 @@ Chapter 3: Using PuTTY
        by telling it exactly what host key to expect, which can be
        useful if the normal automatic host key store in the Registry is
        unavailable. The argument to this option should be either a host key
-       fingerprint, or an SSH-2 public key blob. See section 4.20.2 for
+       fingerprint, or an SSH-2 public key blob. See section 4.21.3 for
        more information.
 
        You can specify this option more than once if you want to configure
@@ -1201,7 +1234,7 @@ Chapter 3: Using PuTTY
        machine and using it as a proxy for the network connection. It
        expects a shell command string as an argument.
 
-       See section 4.15.1 for more information on this, and on other proxy
+       See section 4.16.1 for more information on this, and on other proxy
        settings. In particular, note that since the special sequences
        described there are understood in the argument string, literal
        backslashes must be doubled (if you want `\' in your command, you
@@ -1233,6 +1266,18 @@ Chapter 3: Using PuTTY
        (However, if you're invoking PuTTY tools explicitly, for instance as
        a proxy command, you'll need to arrange to pass them the `-restrict-
        acl' option yourself, if that's what you want.)
+
+       If Pageant is started with the `-restrict-acl' option, and you use
+       it to launch a PuTTY session from its System Tray submenu, then
+       Pageant will _not_ default to starting the PuTTY subprocess with
+       a restricted ACL. This is because PuTTY is more likely to suffer
+       reduced functionality as a result of restricted ACLs (e.g. screen
+       reader software will have a greater need to interact with it),
+       whereas Pageant stores the more critical information (hence benefits
+       more from the extra protection), so it's reasonable to want to run
+       Pageant but not PuTTY with the ACL restrictions. You can force
+       Pageant to start subsidiary PuTTY processes with a restricted ACL if
+       you also pass the `-restrict-putty-acl' option.
 
 Chapter 4: Configuring PuTTY
 ----------------------------
@@ -1275,7 +1320,7 @@ Chapter 4: Configuring PuTTY
 
        If you select `Serial' from the `Connection type' radio buttons,
        the `Host Name' and `Port' boxes are replaced by `Serial line' and
-       `Speed'; see section 4.28 for more details of these.
+       `Speed'; see section 4.29 for more details of these.
 
  4.1.2 Loading and storing saved sessions
 
@@ -1338,18 +1383,18 @@ Chapter 4: Configuring PuTTY
          HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions
 
        If you need to store them in a file, you could try the method
-       described in section 4.29.
+       described in section 4.30.
 
- 4.1.3 `Close Window on Exit'
+ 4.1.3 `Close window on exit'
 
        Finally in the Session panel, there is an option labelled `Close
-       Window on Exit'. This controls whether the PuTTY terminal window
+       window on exit'. This controls whether the PuTTY terminal window
        disappears as soon as the session inside it terminates. If you are
        likely to want to copy and paste text out of the session after it
        has terminated, or restart the session, you should arrange for this
        option to be off.
 
-       `Close Window On Exit' has three settings. `Always' means always
+       `Close window on exit' has three settings. `Always' means always
        close the window on exit; `Never' means never close on exit (always
        leave the window open, but inactive). The third setting, and the
        default one, is `Only on clean exit'. In this mode, a session which
@@ -1390,7 +1435,7 @@ Chapter 4: Configuring PuTTY
            entries). You might need this to debug a network-level problem,
            or more likely to send to the PuTTY authors as part of a bug
            report. _BE WARNED_ that if you log in using a password, the
-           password can appear in the log file; see section 4.2.4 for
+           password can appear in the log file; see section 4.2.5 for
            options that may help to remove sensitive material from the log
            file before you send it to anyone else.
 
@@ -1463,7 +1508,14 @@ Chapter 4: Configuring PuTTY
        (although it will of course be flushed when it is closed, for
        instance at the end of a session).
 
- 4.2.4 Options specific to SSH packet logging
+ 4.2.4 `Include header'
+
+       This option allows you to choose whether to include a header line
+       with the date and time when the log file is opened. It may be useful
+       to disable this if the log file is being used as realtime input to
+       other programs that don't expect the header line.
+
+ 4.2.5 Options specific to SSH packet logging
 
        These options only apply if SSH packet data is being logged.
 
@@ -1473,7 +1525,7 @@ Chapter 4: Configuring PuTTY
        glean a lot of useful information from even these obfuscated logs
        (e.g., length of password).
 
-4.2.4.1 `Omit known password fields'
+4.2.5.1 `Omit known password fields'
 
        When checked, decrypted password fields are removed from the log of
        transmitted packets. (This includes any user responses to challenge-
@@ -1489,7 +1541,7 @@ Chapter 4: Configuring PuTTY
 
        This option is enabled by default.
 
-4.2.4.2 `Omit session data'
+4.2.5.2 `Omit session data'
 
        When checked, all decrypted `session data' is omitted; this is
        defined as data in terminal sessions and in forwarded channels (TCP,
@@ -1638,7 +1690,7 @@ Chapter 4: Configuring PuTTY
 
        Note that this is _not_ the feature of PuTTY which the server will
        typically use to determine your terminal type. That feature is the
-       `Terminal-type string' in the Connection panel; see section 4.14.3
+       `Terminal-type string' in the Connection panel; see section 4.15.3
        for details.
 
        You can include control characters in the answerback string using
@@ -1723,7 +1775,7 @@ Chapter 4: Configuring PuTTY
        expects. With a Unix server, this is likely to depend on the
        `termcap' or `terminfo' entry it uses, which in turn is likely to be
        controlled by the `Terminal-type string' setting in the Connection
-       panel; see section 4.14.3 for details. If none of the settings here
+       panel; see section 4.15.3 for details. If none of the settings here
        seems to help, you may find question A.7.13 to be useful.
 
  4.4.1 Changing the action of the Backspace key
@@ -1736,7 +1788,7 @@ Chapter 4: Configuring PuTTY
        press Backspace.
 
        If you are connecting over SSH, PuTTY by default tells the server
-       the value of this option (see section 4.24.2), so you may find that
+       the value of this option (see section 4.25.2), so you may find that
        the Backspace key does the right thing either way. Similarly, if
        you are connecting to a Unix system, you will probably find that
        the Unix `stty' command lets you configure which the server expects
@@ -2015,7 +2067,7 @@ Chapter 4: Configuring PuTTY
        Note that even if the application takes over the mouse, you can
        still manage PuTTY's copy and paste by holding down the Shift key
        while you select and paste, unless you have deliberately turned this
-       feature off (see section 4.11.3).
+       feature off (see section 4.11.2).
 
  4.6.3 Disabling remote terminal resizing
 
@@ -2477,33 +2529,52 @@ Chapter 4: Configuring PuTTY
        that were received as Unicode code points will paste as Unicode
        always.
 
+4.10.6 Combining VT100 line-drawing with UTF-8
+
+       If PuTTY is configured to treat data from the server as encoded in
+       UTF-8, then by default it disables the older VT100-style system
+       of control sequences that cause the lower-case letters to be
+       temporarily replaced by line drawing characters.
+
+       The rationale is that in UTF-8 mode you don't need those control
+       sequences anyway, because all the line-drawing characters they
+       access are available as Unicode characters already, so there's no
+       need for applications to put the terminal into a special state to
+       get at them.
+
+       Also, it removes a risk of the terminal _accidentally_ getting into
+       that state: if you accidentally write uncontrolled binary data to a
+       non-UTF-8 terminal, it can be surprisingly common to find that your
+       next shell prompt appears as a sequence of line-drawing characters
+       and then you have to remember or look up how to get out of that
+       mode. So by default, UTF-8 mode simply doesn't _have_ a confusing
+       mode like that to get into, accidentally or on purpose.
+
+       However, not all applications will see it that way. Even UTF-8
+       terminal users will still sometimes have to run software that tries
+       to print line-drawing characters in the old-fashioned way. So the
+       configuration option `Enable VT100 line drawing even in UTF-8 mode'
+       puts PuTTY into a hybrid mode in which it understands the VT100-
+       style control sequences that change the meaning of the ASCII lower
+       case letters, _and_ understands UTF-8.
+
   4.11 The Selection panel
 
        The Selection panel allows you to control the way copy and paste
        work in the PuTTY window.
 
-4.11.1 Pasting in Rich Text Format
-
-       If you enable `Paste to clipboard in RTF as well as plain text',
-       PuTTY will write formatting information to the clipboard as well
-       as the actual text you copy. The effect of this is that if you
-       paste into (say) a word processor, the text will appear in the word
-       processor in the same font, colour, and style (e.g. bold, underline)
-       PuTTY was using to display it.
-
-       This option can easily be inconvenient, so by default it is
-       disabled.
-
-4.11.2 Changing the actions of the mouse buttons
+4.11.1 Changing the actions of the mouse buttons
 
        PuTTY's copy and paste mechanism is by default modelled on the Unix
        `xterm' application. The X Window System uses a three-button mouse,
-       and the convention is that the left button selects, the right button
-       extends an existing selection, and the middle button pastes.
+       and the convention in that system is that the left button selects,
+       the right button extends an existing selection, and the middle
+       button pastes.
 
-       Windows often only has two mouse buttons, so in PuTTY's default
-       configuration (`Compromise'), the _right_ button pastes, and the
-       _middle_ button (if you have one) extends a selection.
+       Windows often only has two mouse buttons, so when run on
+       Windows, PuTTY is configurable. In PuTTY's default configuration
+       (`Compromise'), the _right_ button pastes, and the _middle_ button
+       (if you have one) extends a selection.
 
        If you have a three-button mouse and you are already used to the
        `xterm' arrangement, you can select it using the `Action of mouse
@@ -2515,7 +2586,10 @@ Chapter 4: Configuring PuTTY
        by holding down Ctrl and right-clicking, regardless of the setting
        of this option.)
 
-4.11.3 `Shift overrides application's use of mouse'
+       (When PuTTY iself is running on Unix, it follows the X Window System
+       convention.)
+
+4.11.2 `Shift overrides application's use of mouse'
 
        PuTTY allows the server to send control codes that let it take
        over the mouse and use it for purposes other than copy and paste.
@@ -2539,7 +2613,7 @@ Chapter 4: Configuring PuTTY
        all, you can do this using the Features control panel; see section
        4.6.2.
 
-4.11.4 Default selection mode
+4.11.3 Default selection mode
 
        As described in section 3.1.1, PuTTY has two modes of selecting
        text to be copied to the clipboard. In the default mode (`Normal'),
@@ -2554,10 +2628,105 @@ Chapter 4: Configuring PuTTY
        control, you can set rectangular selection as the default, and then
        you have to hold down Alt to get the _normal_ behaviour.
 
-4.11.5 Configuring word-by-word selection
+4.11.4 Assigning copy and paste actions to clipboards
+
+       Here you can configure which clipboard(s) are written or read by
+       PuTTY's various copy and paste actions.
+
+       Most platforms, including Windows, have a single system clipboard.
+       On these platforms, PuTTY provides a second clipboard-like
+       facility by permitting you to paste the text you last selected in
+       _this window_, whether or not it is currently also in the system
+       clipboard. This is not enabled by default.
+
+       The X Window System (which underlies most Unix graphical
+       interfaces) provides multiple clipboards (or `selections'), and
+       many applications support more than one of them by a different user
+       interface mechanism. When PuTTY itself is running on Unix, it has
+       more configurability relating to these selections.
+
+       The two most commonly used selections are called `PRIMARY' and
+       `CLIPBOARD'; in applications supporting both, the usual behaviour
+       is that PRIMARY is used by mouse-only actions (selecting text
+       automatically copies it to PRIMARY, and middle-clicking pastes from
+       PRIMARY), whereas CLIPBOARD is used by explicit Copy and Paste menu
+       items or keypresses such as Ctrl-C and Ctrl-V.
+
+4.11.4.1 `Auto-copy selected text'
+
+       The checkbox `Auto-copy selected text to system clipboard' controls
+       whether or not selecting text in the PuTTY terminal window
+       automatically has the side effect of copying it to the system
+       clipboard, without requiring a separate user interface action.
+
+       On X, the wording of this option is changed slightly so that
+       `CLIPBOARD' is mentioned in place of the `system clipboard'. Text
+       selected in the terminal window will _always_ be automatically
+       placed in the PRIMARY selection, as is conventional, but if you tick
+       this box, it will _also_ be placed in `CLIPBOARD' at the same time.
+
+4.11.4.2 Choosing a clipboard for UI actions
+
+       PuTTY has three user-interface actions which can be configured to
+       paste into the terminal (not counting menu items). You can click
+       whichever mouse button (if any) is configured to paste (see section
+       4.11.1); you can press Shift-Ins; or you can press Ctrl-Shift-V,
+       although that action is not enabled by default.
+
+       You can configure which of the available clipboards each of these
+       actions pastes from (including turning the paste action off
+       completely). On platforms with a single system clipboard (such as
+       Windows), the available options are to paste from that clipboard
+       or to paste from PuTTY's internal memory of the last selected text
+       within that window. On X, the standard options are CLIPBOARD or
+       PRIMARY.
+
+       (PRIMARY is conceptually similar in that it _also_ refers to the
+       last selected text - just across all applications instead of just
+       this window.)
+
+       The two keyboard options each come with a corresponding key to copy
+       _to_ the same clipboard. Whatever you configure Shift-Ins to paste
+       from, Ctrl-Ins will copy to the same location; similarly, Ctrl-
+       Shift-C will copy to whatever Ctrl-Shift-V pastes from.
+
+       On X, you can also enter a selection name of your choice. For
+       example, there is a rarely-used standard selection called
+       `SECONDARY', which Emacs (for example) can work with if you hold
+       down the Meta key while dragging to select or clicking to paste; if
+       you configure a PuTTY keyboard action to access this clipboard, then
+       you can interoperate with other applications' use of it. Another
+       thing you could do would be to invent a clipboard name yourself, to
+       create a special clipboard shared _only_ between instances of PuTTY,
+       or between just instances configured in that particular way.
+
+4.11.5 `Permit control characters in pasted text'
+
+       It is possible for the clipboard to contain not just text (with
+       newlines and tabs) but also control characters such as ESC which
+       could have surprising effects if pasted into a terminal session,
+       depending on what program is running on the server side. Copying
+       text from a mischievous web page could put such characters onto the
+       clipboard.
+
+       By default, PuTTY filters out the more unusual control characters,
+       only letting through the more obvious text-formatting characters
+       (newlines, tab, backspace, and DEL).
+
+       Setting this option stops this filtering; on paste, any character
+       on the clipboard is sent to the session uncensored. This might be
+       useful if you are deliberately using control character pasting as a
+       simple form of scripting, for instance.
+
+  4.12 The Copy panel
+
+       The Copy configuration panel controls behaviour specifically related
+       to copying from the terminal window to the clipboard.
+
+4.12.1 Character classes
 
        PuTTY will select a word at a time in the terminal window if you
-       double-click to begin the drag. This panel allows you to control
+       double-click to begin the drag. This section allows you to control
        precisely what is considered to be a word.
 
        Each character is given a _class_, which is a small number
@@ -2593,11 +2762,23 @@ Chapter 4: Configuring PuTTY
        section 3.1.3.6). However, if you modify this option in mid-session
        using `Change Settings', it will take effect immediately.
 
-  4.12 The Colours panel
+4.12.2 Copying in Rich Text Format
+
+       If you enable `Copy to clipboard in RTF as well as plain text',
+       PuTTY will write formatting information to the clipboard as well
+       as the actual text you copy. The effect of this is that if you
+       paste into (say) a word processor, the text will appear in the word
+       processor in the same font, colour, and style (e.g. bold, underline)
+       PuTTY was using to display it.
+
+       This option can easily be inconvenient, so by default it is
+       disabled.
+
+  4.13 The Colours panel
 
        The Colours panel allows you to control PuTTY's use of colour.
 
-4.12.1 `Allow terminal to specify ANSI colours'
+4.13.1 `Allow terminal to specify ANSI colours'
 
        This option is enabled by default. If it is disabled, PuTTY will
        ignore any control sequences sent by the server to request coloured
@@ -2607,7 +2788,7 @@ Chapter 4: Configuring PuTTY
        turn this option off and make PuTTY only use the default foreground
        and background colours.
 
-4.12.2 `Allow terminal to use xterm 256-colour mode'
+4.13.2 `Allow terminal to use xterm 256-colour mode'
 
        This option is enabled by default. If it is disabled, PuTTY will
        ignore any control sequences sent by the server which use the
@@ -2626,7 +2807,14 @@ Chapter 4: Configuring PuTTY
        your terminal setting. On modern Linux machines, you could try
        `xterm-256color'.
 
-4.12.3 `Indicate bolded text by changing...'
+4.13.3 `Allow terminal to use 24-bit colour'
+
+       This option is enabled by default. If it is disabled, PuTTY will
+       ignore any control sequences sent by the server which use the
+       control sequences supported by modern terminals to specify arbitrary
+       24-bit RGB colour value.
+
+4.13.4 `Indicate bolded text by changing...'
 
        When the server sends a control sequence indicating that some text
        should be displayed in bold, PuTTY can handle this in several ways.
@@ -2645,7 +2833,7 @@ Chapter 4: Configuring PuTTY
        black background; if you choose `The font', their text may become
        invisible.
 
-4.12.4 `Attempt to use logical palettes'
+4.13.5 `Attempt to use logical palettes'
 
        Logical palettes are a mechanism by which a Windows application
        running on an 8-bit colour display can select precisely the colours
@@ -2655,17 +2843,17 @@ Chapter 4: Configuring PuTTY
        you can try enabling this option. However, be warned that it's never
        worked very well.
 
-4.12.5 `Use system colours'
+4.13.6 `Use system colours'
 
        Enabling this option will cause PuTTY to ignore the configured
        colours for `Default Background/Foreground' and `Cursor Colour/Text'
-       (see section 4.12.6), instead going with the system-wide defaults.
+       (see section 4.13.7), instead going with the system-wide defaults.
 
        Note that non-bold and bold text will be the same colour if this
        option is enabled. You might want to change to indicating bold text
-       by font changes (see section 4.12.3).
+       by font changes (see section 4.13.4).
 
-4.12.6 Adjusting the colours in the terminal window
+4.13.7 Adjusting the colours in the terminal window
 
        The main colour control allows you to specify exactly what colours
        things should be displayed in. To modify one of the PuTTY colours,
@@ -2682,18 +2870,18 @@ Chapter 4: Configuring PuTTY
        colours (black, red, green, yellow, blue, magenta, cyan, and white).
        You can also modify the precise shades used for the bold versions
        of these colours; these are used to display bold text if you have
-       chosen to indicate that by colour (see section 4.12.3), and can also
+       chosen to indicate that by colour (see section 4.13.4), and can also
        be used if the server asks specifically to use them. (Note that
        `Default Bold Background' is _not_ the background colour used for
        bold text; it is only used if the server specifically asks for a
        bold background.)
 
-  4.13 The Connection panel
+  4.14 The Connection panel
 
        The Connection panel allows you to configure options that apply to
        more than one type of connection.
 
-4.13.1 Using keepalives to prevent disconnection
+4.14.1 Using keepalives to prevent disconnection
 
        If you find your sessions are closing unexpectedly (most often with
        `Connection reset by peer') after they have been idle for a while,
@@ -2731,7 +2919,7 @@ Chapter 4: Configuring PuTTY
        increase the probability that PuTTY will attempt to send data during
        a break in connectivity. (Other types of periodic network activity
        can cause this behaviour; in particular, SSH-2 re-keys can have this
-       effect. See section 4.19.2.)
+       effect. See section 4.20.2.)
 
        Therefore, you might find that keepalives help connection loss,
        or you might find they make it worse, depending on what _kind_ of
@@ -2739,13 +2927,13 @@ Chapter 4: Configuring PuTTY
 
        Keepalives are only supported in Telnet and SSH; the Rlogin and Raw
        protocols offer no way of implementing them. (For an alternative,
-       see section 4.13.3.)
+       see section 4.14.3.)
 
        Note that if you are using SSH-1 and the server has a bug that makes
-       it unable to deal with SSH-1 ignore messages (see section 4.27.1),
+       it unable to deal with SSH-1 ignore messages (see section 4.28.11),
        enabling keepalives will have no effect.
 
-4.13.2 `Disable Nagle's algorithm'
+4.14.2 `Disable Nagle's algorithm'
 
        Nagle's algorithm is a detail of TCP/IP implementations that tries
        to minimise the number of small data packets sent down a network
@@ -2757,10 +2945,10 @@ Chapter 4: Configuring PuTTY
        The Nagle algorithm is disabled by default for interactive
        connections.
 
-4.13.3 `Enable TCP keepalives'
+4.14.3 `Enable TCP keepalives'
 
        _NOTE:_ TCP keepalives should not be confused with the application-
-       level keepalives described in section 4.13.1. If in doubt, you
+       level keepalives described in section 4.14.1. If in doubt, you
        probably want application-level keepalives; TCP keepalives are
        provided for completeness.
 
@@ -2783,13 +2971,13 @@ Chapter 4: Configuring PuTTY
 
        TCP keepalives are disabled by default.
 
-4.13.4 `Internet protocol'
+4.14.4 `Internet protocol version'
 
        This option allows the user to select between the old and new
        Internet protocols and addressing schemes (IPv4 and IPv6). The
        selected protocol will be used for most outgoing network connections
        (including connections to proxies); however, tunnels have their own
-       configuration, for which see section 4.26.2.
+       configuration, for which see section 4.27.2.
 
        The default setting is `Auto', which means PuTTY will do something
        sensible and try to guess which protocol you wanted. (If you specify
@@ -2801,7 +2989,7 @@ Chapter 4: Configuring PuTTY
        If you need to force PuTTY to use a particular protocol, you can
        explicitly set this to `IPv4' or `IPv6'.
 
-4.13.5 `Logical name of remote host'
+4.14.5 `Logical name of remote host'
 
        This allows you to tell PuTTY that the host it will really end up
        connecting to is different from where it thinks it is making a
@@ -2829,7 +3017,7 @@ Chapter 4: Configuring PuTTY
        servers, you probably didn't want any particular server's host
        key cached under that local port number. (For this latter case,
        you could instead explicitly configure host keys in the relevant
-       sessions; see section 4.20.2.)
+       sessions; see section 4.21.3.)
 
        If you just enter a host name for this option, PuTTY will cache the
        SSH host key under the default SSH port for that host, irrespective
@@ -2849,7 +3037,7 @@ Chapter 4: Configuring PuTTY
        using to contact that host. (This applies even if you're using a
        protocol other than SSH.)
 
-  4.14 The Data panel
+  4.15 The Data panel
 
        The Data panel allows you to configure various pieces of data which
        can be sent to the server to affect your connection at the far end.
@@ -2858,7 +3046,7 @@ Chapter 4: Configuring PuTTY
        Options which apply to only one protocol appear on that protocol's
        configuration panels.
 
-4.14.1 `Auto-login username'
+4.15.1 `Auto-login username'
 
        All three of the SSH, Telnet and Rlogin protocols allow you to
        specify what user name you want to log in as, without having to type
@@ -2866,24 +3054,24 @@ Chapter 4: Configuring PuTTY
 
        In this box you can type that user name.
 
-4.14.2 Use of system username
+4.15.2 Use of system username
 
-       When the previous box (section 4.14.1) is left blank, by default,
+       When the previous box (section 4.15.1) is left blank, by default,
        PuTTY will prompt for a username at the time you make a connection.
 
        In some environments, such as the networks of large organisations
-       implementing single sign-on, a more sensible default may be to
-       use the name of the user logged in to the local operating system
-       (if any); this is particularly likely to be useful with GSSAPI
-       authentication (see section 4.23). This control allows you to change
-       the default behaviour.
+       implementing single sign-on, a more sensible default may be to use
+       the name of the user logged in to the local operating system (if
+       any); this is particularly likely to be useful with GSSAPI key
+       exchange and user authentication (see section 4.24 and section
+       4.20.1.1). This control allows you to change the default behaviour.
 
        The current system username is displayed in the dialog as a
        convenience. It is not saved in the configuration; if a saved
        session is later used by a different user, that user's name will be
        used.
 
-4.14.3 `Terminal-type string'
+4.15.3 `Terminal-type string'
 
        Most servers you might connect to with PuTTY are designed to be
        connected to from lots of different types of terminal. In order to
@@ -2905,7 +3093,7 @@ Chapter 4: Configuring PuTTY
        setting or not, you probably need to consult the manual for your
        application or your server.
 
-4.14.4 `Terminal speeds'
+4.15.4 `Terminal speeds'
 
        The Telnet, Rlogin, and SSH protocols allow the client to specify
        terminal speeds to the server.
@@ -2927,7 +3115,7 @@ Chapter 4: Configuring PuTTY
 
        This option has no effect on Raw connections.
 
-4.14.5 Setting environment variables on the server
+4.15.5 Setting environment variables on the server
 
        The Telnet protocol provides a means for the client to pass
        environment variables to the server. Many Telnet servers have
@@ -2948,7 +3136,7 @@ Chapter 4: Configuring PuTTY
        its value in the `Value' box, and press the `Add' button. To remove
        one from the list, select it in the list box and press `Remove'.
 
-  4.15 The Proxy panel
+  4.16 The Proxy panel
 
        The Proxy panel allows you to configure PuTTY to use various types
        of proxy in order to make its network connections. The settings in
@@ -2961,7 +3149,7 @@ Chapter 4: Configuring PuTTY
        (if so) which one to use for a given destination. If you need to use
        a proxy, it must always be explicitly configured.
 
-4.15.1 Setting the proxy type
+4.16.1 Setting the proxy type
 
        The `Proxy type' radio buttons allow you to configure what type of
        proxy you want PuTTY to use for its network connections. The default
@@ -2983,7 +3171,7 @@ Chapter 4: Configuring PuTTY
         -  Selecting `Local' allows you to specify an arbitrary command
            on the local machine to act as a proxy. When the session is
            started, instead of creating a TCP connection, PuTTY runs the
-           command (specified in section 4.15.5), and uses its standard
+           command (specified in section 4.16.5), and uses its standard
            input and output streams.
 
            This could be used, for instance, to talk to some kind of
@@ -2998,7 +3186,7 @@ Chapter 4: Configuring PuTTY
            You can also enable this mode on the command line; see section
            3.8.3.24.
 
-4.15.2 Excluding parts of the network from proxying
+4.16.2 Excluding parts of the network from proxying
 
        Typically you will only need to use a proxy to connect to non-local
        parts of your network; for example, your proxy might be required for
@@ -3031,13 +3219,13 @@ Chapter 4: Configuring PuTTY
        behaviour would ever cause problems, but if it does you can change
        it by enabling `Consider proxying local host connections'.
 
-       Note that if you are doing DNS at the proxy (see section 4.15.3),
+       Note that if you are doing DNS at the proxy (see section 4.16.3),
        you should make sure that your proxy exclusion settings do not
        depend on knowing the IP address of a host. If the name is passed on
        to the proxy without PuTTY looking it up, it will never know the IP
        address and cannot check it against your list.
 
-4.15.3 Name resolution when using a proxy
+4.16.3 Name resolution when using a proxy
 
        If you are using a proxy to access a private network, it can make a
        difference whether DNS name resolution is performed by PuTTY itself
@@ -3055,7 +3243,7 @@ Chapter 4: Configuring PuTTY
        them; SOCKS4 proxies will not.
 
        Note that if you are doing DNS at the proxy, you should make sure
-       that your proxy exclusion settings (see section 4.15.2) do not
+       that your proxy exclusion settings (see section 4.16.2) do not
        depend on knowing the IP address of a host. If the name is passed on
        to the proxy without PuTTY looking it up, it will never know the IP
        address and cannot check it against your list.
@@ -3065,7 +3253,7 @@ Chapter 4: Configuring PuTTY
        all SOCKS 4 servers provide this extension. If you enable proxy DNS
        and your SOCKS 4 server cannot deal with it, this might be why.
 
-4.15.4 Username and password
+4.16.4 Username and password
 
        If your proxy requires authentication, you can enter a username and
        a password in the `Username' and `Password' boxes.
@@ -3091,9 +3279,9 @@ Chapter 4: Configuring PuTTY
            passwords.
 
         -  You can specify a way to include a username and password in the
-           Telnet/Local proxy command (see section 4.15.5).
+           Telnet/Local proxy command (see section 4.16.5).
 
-4.15.5 Specifying the Telnet or Local proxy command
+4.16.5 Specifying the Telnet or Local proxy command
 
        If you are using the Telnet proxy type, the usual command required
        by the firewall's Telnet server is `connect', followed by a host
@@ -3127,7 +3315,7 @@ Chapter 4: Configuring PuTTY
        tokens in the Telnet command, then the `Username' and `Password'
        configuration fields will be ignored.
 
-4.15.6 Controlling proxy logging
+4.16.6 Controlling proxy logging
 
        Often the proxy interaction has its own diagnostic output; this is
        particularly the case for local proxy commands.
@@ -3145,12 +3333,12 @@ Chapter 4: Configuring PuTTY
        further proxy-related messages during the session will only go to
        the Event Log.
 
-  4.16 The Telnet panel
+  4.17 The Telnet panel
 
        The Telnet panel allows you to configure options that only apply to
        Telnet sessions.
 
-4.16.1 `Handling of OLD_ENVIRON ambiguity'
+4.17.1 `Handling of OLD_ENVIRON ambiguity'
 
        The original Telnet mechanism for passing environment variables was
        badly specified. At the time the standard (RFC 1408) was written,
@@ -3172,7 +3360,7 @@ Chapter 4: Configuring PuTTY
        unambiguous. This feature should only be needed if you have trouble
        passing environment variables to quite an old server.
 
-4.16.2 Passive and active Telnet negotiation modes
+4.17.2 Passive and active Telnet negotiation modes
 
        In a Telnet connection, there are two types of data passed between
        the client and the server: actual text, and _negotiations_ about
@@ -3195,7 +3383,7 @@ Chapter 4: Configuring PuTTY
        you have confusing trouble with a firewall, you could try enabling
        passive mode to see if it helps.
 
-4.16.3 `Keyboard sends Telnet special commands'
+4.17.3 `Keyboard sends Telnet special commands'
 
        If this box is checked, several key sequences will have their normal
        actions modified:
@@ -3210,7 +3398,7 @@ Chapter 4: Configuring PuTTY
        You probably shouldn't enable this unless you know what you're
        doing.
 
-4.16.4 `Return key sends Telnet New Line instead of ^M'
+4.17.4 `Return key sends Telnet New Line instead of ^M'
 
        Unlike most other remote login protocols, the Telnet protocol has
        a special `new line' code that is not the same as the usual line
@@ -3224,12 +3412,12 @@ Chapter 4: Configuring PuTTY
        behaviour when you press Return in a Telnet session, you might try
        turning this option off to see if it helps.
 
-  4.17 The Rlogin panel
+  4.18 The Rlogin panel
 
        The Rlogin panel allows you to configure options that only apply to
        Rlogin sessions.
 
-4.17.1 `Local username'
+4.18.1 `Local username'
 
        Rlogin allows an automated (password-free) form of login by means
        of a file called `.rhosts' on the server. You put a line in your
@@ -3260,12 +3448,12 @@ Chapter 4: Configuring PuTTY
        user name (or in case you didn't bother to set up a Windows user
        name).
 
-  4.18 The SSH panel
+  4.19 The SSH panel
 
        The SSH panel allows you to configure options that only apply to SSH
        sessions.
 
-4.18.1 Executing a specific command on the server
+4.19.1 Executing a specific command on the server
 
        In SSH, you don't have to run a general shell session on the server.
        Instead, you can choose to run a single specific command (such as
@@ -3275,7 +3463,7 @@ Chapter 4: Configuring PuTTY
        Note that most servers will close the session after executing the
        command.
 
-4.18.2 `Don't start a shell or command at all'
+4.19.2 `Don't start a shell or command at all'
 
        If you tick this box, PuTTY will not attempt to run a shell or
        command after connecting to the remote server. You might want to
@@ -3294,7 +3482,7 @@ Chapter 4: Configuring PuTTY
        will be by pressing Control-C or sending a kill signal from another
        program.
 
-4.18.3 `Enable compression'
+4.19.3 `Enable compression'
 
        This enables data compression in the SSH connection: data sent by
        the server is compressed before sending, and decompressed at the
@@ -3302,7 +3490,7 @@ Chapter 4: Configuring PuTTY
        first and the server decompresses it at the other end. This can help
        make the most of a low-bandwidth connection.
 
-4.18.4 `SSH protocol version'
+4.19.4 `SSH protocol version'
 
        This allows you to select whether to use SSH protocol version 2 or
        the older version 1.
@@ -3323,7 +3511,7 @@ Chapter 4: Configuring PuTTY
        This prevents an active attacker downgrading an intended SSH-2
        connection to SSH-1.
 
-4.18.5 Sharing an SSH connection between PuTTY tools
+4.19.5 Sharing an SSH connection between PuTTY tools
 
        The controls in this box allow you to configure PuTTY to reuse an
        existing SSH connection, where possible.
@@ -3383,9 +3571,9 @@ Chapter 4: Configuring PuTTY
        special case is that PSCP and PSFTP will _never_ act as upstreams.
 
        It is possible to test programmatically for the existence of a live
-       upstream using Plink. See section 7.2.3.3.
+       upstream using Plink. See section 7.2.3.4.
 
-  4.19 The Kex panel
+  4.20 The Kex panel
 
        The Kex panel (short for `key exchange') allows you to configure
        options related to SSH-2 key exchange.
@@ -3409,11 +3597,11 @@ Chapter 4: Configuring PuTTY
        This entire panel is only relevant to SSH protocol version 2; none
        of these settings affect SSH-1 at all.
 
-4.19.1 Key exchange algorithm selection
+4.20.1 Key exchange algorithm selection
 
        PuTTY supports a variety of SSH-2 key exchange methods, and allows
        you to choose which one you prefer to use; configuration is similar
-       to cipher selection (see section 4.21).
+       to cipher selection (see section 4.22).
 
        PuTTY currently supports the following key exchange methods:
 
@@ -3438,11 +3626,48 @@ Chapter 4: Configuring PuTTY
            on the part of the client, and somewhat less on the part of the
            server, than Diffie-Hellman key exchange.
 
+        -  `GSSAPI key exchange': see section 4.20.1.1.
+
        If the first algorithm PuTTY finds is below the `warn below here'
        line, you will see a warning box when you make the connection,
-       similar to that for cipher selection (see section 4.21).
+       similar to that for cipher selection (see section 4.22).
 
-4.19.2 Repeat key exchange
+4.20.1.1 GSSAPI-based key exchange
+
+       PuTTY supports a set of key exchange methods that also incorporates
+       GSSAPI-based authentication. They are enabled with the `Attempt
+       GSSAPI key exchange' checkbox (which also appears on the `GSSAPI'
+       panel).
+
+       PuTTY can only perform the GSSAPI-authenticated key exchange methods
+       when using Kerberos V5, and not other GSSAPI mechanisms. If the user
+       running PuTTY has current Kerberos V5 credentials, then PuTTY will
+       select the GSSAPI key exchange methods in preference to any of the
+       ordinary SSH key exchange methods configured in the preference list.
+
+       The advantage of doing GSSAPI authentication as part of the SSH
+       key exchange is apparent when you are using credential delegation
+       (see section 4.24.1). The SSH key exchange can be repeated later in
+       the session, and this allows your Kerberos V5 credentials (which
+       are typically short-lived) to be automatically re-delegated to the
+       server when they are refreshed on the client. (This feature is
+       commonly referred to as `cascading credentials'.)
+
+       If your server doesn't support GSSAPI key exchange, it may still
+       support GSSAPI in the SSH user authentication phase. This will still
+       let you log in using your Kerberos credentials, but will only allow
+       you to delegate the credentials that are active at the beginning of
+       the session; they can't be refreshed automatically later, in a long-
+       running session.
+
+       Another effect of GSSAPI key exchange is that it replaces the usual
+       SSH mechanism of permanent host keys described in section 2.2. So
+       if you use this method, then you won't be asked any interactive
+       questions about whether to accept the server's host key. Instead,
+       the Kerberos exchange will verify the identity of the host you
+       connect to, at the same time as verifying your identity to it.
+
+4.20.2 Repeat key exchange
 
        If the session key negotiated at connection startup is used too much
        or for too long, it may become feasible to mount attacks against the
@@ -3474,12 +3699,20 @@ Chapter 4: Configuring PuTTY
        attempted rekey in the middle of the dropout will probably cause
        the connection to be abandoned, whereas if rekeys are disabled
        then the connection should in principle survive (in the absence
-       of interfering firewalls). See section 4.13.1 for more discussion
+       of interfering firewalls). See section 4.14.1 for more discussion
        of these issues; for these purposes, rekeys have much the same
        properties as keepalives. (Except that rekeys have cryptographic
        value in themselves, so you should bear that in mind when deciding
        whether to turn them off.) Note, however, the the SSH _server_ can
        still initiate rekeys.
+
+        -  `Minutes between GSSAPI checks', if you're using GSSAPI key
+           exchange, specifies how often the GSSAPI credential cache is
+           checked to see whether new tickets are available for delegation,
+           or current ones are near expiration. If forwarding of GSSAPI
+           credentials is enabled, PuTTY will try to rekey as necessary to
+           keep the delegated credentials from expiring. Frequent checks
+           are recommended; rekeying only happens when needed.
 
         -  `Max data before rekey' specifies the amount of data (in bytes)
            that is permitted to flow in either direction before a rekey is
@@ -3504,7 +3737,7 @@ Chapter 4: Configuring PuTTY
        same problems. The SSH-1 protocol, incidentally, has even weaker
        integrity protection than SSH-2 without rekeys.
 
-  4.20 The Host Keys panel
+  4.21 The Host Keys panel
 
        The Host Keys panel allows you to configure options related to SSH-2
        host key management.
@@ -3517,11 +3750,11 @@ Chapter 4: Configuring PuTTY
        This entire panel is only relevant to SSH protocol version 2; none
        of these settings affect SSH-1 at all.
 
-4.20.1 Host key type selection
+4.21.1 Host key type selection
 
        PuTTY supports a variety of SSH-2 host key types, and allows you
        to choose which one you prefer to use to identify the server.
-       Configuration is similar to cipher selection (see section 4.21).
+       Configuration is similar to cipher selection (see section 4.22).
 
        PuTTY currently supports the following host key types:
 
@@ -3546,9 +3779,30 @@ Chapter 4: Configuring PuTTY
 
        If the first key type PuTTY finds is below the `warn below here'
        line, you will see a warning box when you make the connection,
-       similar to that for cipher selection (see section 4.21).
+       similar to that for cipher selection (see section 4.22).
 
-4.20.2 Manually configuring host keys
+4.21.2 Preferring known host keys
+
+       By default, PuTTY will adjust the preference order for host key
+       algorithms so that any host keys it already knows are moved to the
+       top of the list.
+
+       This prevents you from having to check and confirm a new host key
+       for a server you already had one for (e.g. because the server has
+       generated an alternative key of a type higher in PuTTY's preference
+       order, or because you changed the preference order itself).
+
+       However, on the other hand, it can leak information to a listener
+       in the network about _whether_ you already know a host key for this
+       server.
+
+       For this reason, this policy is configurable. By turning this
+       checkbox off, you can reset PuTTY to always use the exact order of
+       host key algorithms configured in the preference list described in
+       section 4.21.1, so that a listener will find out nothing about what
+       keys you had stored.
+
+4.21.3 Manually configuring host keys
 
        In some situations, if PuTTY's automated host key management is not
        doing what you need, you might need to manually configure PuTTY to
@@ -3570,7 +3824,7 @@ Chapter 4: Configuring PuTTY
 
        For situations where PuTTY's automated host key management simply
        picks the wrong host name to store a key under, you may want to
-       consider setting a `logical host name' instead; see section 4.13.5.
+       consider setting a `logical host name' instead; see section 4.14.5.
 
        To configure manual host keys via the GUI, enter some text
        describing the host key into the edit box in the `Manually configure
@@ -3602,7 +3856,7 @@ Chapter 4: Configuring PuTTY
        If the box is empty (as it usually is), then PuTTY's automated host
        key management will work as normal.
 
-  4.21 The Cipher panel
+  4.22 The Cipher panel
 
        PuTTY supports a variety of different encryption algorithms, and
        allows you to choose which one you prefer to use. You can do this by
@@ -3653,12 +3907,12 @@ Chapter 4: Configuring PuTTY
        `Enable legacy use of single-DES in SSH-2' option; by default this
        is disabled and PuTTY will stick to recommended ciphers.
 
-  4.22 The Auth panel
+  4.23 The Auth panel
 
        The Auth panel allows you to configure authentication options for
        SSH sessions.
 
-4.22.1 `Display pre-authentication banner'
+4.23.1 `Display pre-authentication banner'
 
        SSH-2 servers can provide a message for clients to display to the
        prospective user before the user logs in; this is sometimes known
@@ -3671,7 +3925,7 @@ Chapter 4: Configuring PuTTY
        design). By unchecking this option, display of the banner can be
        suppressed entirely.
 
-4.22.2 `Bypass authentication entirely'
+4.23.2 `Bypass authentication entirely'
 
        In SSH-2, it is in principle possible to establish a connection
        without using SSH's mechanisms to identify or prove who you are to
@@ -3686,17 +3940,17 @@ Chapter 4: Configuring PuTTY
        SSH servers will reject this.
 
        This is not the option you want if you have a username and just
-       want PuTTY to remember it; for that see section 4.14.1. It's
+       want PuTTY to remember it; for that see section 4.15.1. It's
        also probably not what if you're trying to set up passwordless
        login to a mainstream SSH server; depending on the server, you
        probably wanted public-key authentication (chapter 8) or perhaps
-       GSSAPI authentication (section 4.23). (These are still forms of
+       GSSAPI authentication (section 4.24). (These are still forms of
        authentication, even if you don't have to interact with them.)
 
        This option only affects SSH-2 connections. SSH-1 connections always
        require an authentication step.
 
-4.22.3 `Attempt authentication using Pageant'
+4.23.3 `Attempt authentication using Pageant'
 
        If this option is enabled, then PuTTY will look for Pageant (the
        SSH private-key storage agent) and attempt to authenticate with any
@@ -3712,7 +3966,7 @@ Chapter 4: Configuring PuTTY
 
        See chapter 9 for more information about Pageant in general.
 
-4.22.4 `Attempt TIS or CryptoCard authentication'
+4.23.4 `Attempt TIS or CryptoCard authentication'
 
        TIS and CryptoCard authentication are (despite their names) generic
        forms of simple challenge/response authentication available in SSH
@@ -3729,7 +3983,7 @@ Chapter 4: Configuring PuTTY
        administrator about precisely what form these challenges and
        responses take.
 
-4.22.5 `Attempt keyboard-interactive authentication'
+4.23.5 `Attempt keyboard-interactive authentication'
 
        The SSH-2 equivalent of TIS authentication is called `keyboard-
        interactive'. It is a flexible authentication method using an
@@ -3741,7 +3995,7 @@ Chapter 4: Configuring PuTTY
        PuTTY leaves this option enabled by default, but supplies a switch
        to turn it off in case you should have trouble with it.
 
-4.22.6 `Allow agent forwarding'
+4.23.6 `Allow agent forwarding'
 
        This option allows the SSH server to open forwarded connections back
        to your local copy of Pageant. If you are not running Pageant, this
@@ -3752,7 +4006,7 @@ Chapter 4: Configuring PuTTY
        risk involved with enabling this option; see section 9.5 for
        details.
 
-4.22.7 `Allow attempted changes of username in SSH-2'
+4.23.7 `Allow attempted changes of username in SSH-2'
 
        In the SSH-1 protocol, it is impossible to change username after
        failing to authenticate. So if you mis-type your username at the
@@ -3772,7 +4026,7 @@ Chapter 4: Configuring PuTTY
        your server can cope with it, you can enable the `Allow attempted
        changes of username' option to modify PuTTY's behaviour.
 
-4.22.8 `Private key file for authentication'
+4.23.8 `Private key file for authentication'
 
        This box is where you enter the name of your private key file if you
        are using public key authentication. See chapter 8 for information
@@ -3793,7 +4047,7 @@ Chapter 4: Configuring PuTTY
        sufficient to identify the key to Pageant, but of course if Pageant
        isn't present PuTTY can't fall back to using this file itself.
 
-  4.23 The GSSAPI panel
+  4.24 The GSSAPI panel
 
        The `GSSAPI' subpanel of the `Auth' panel controls the use of
        GSSAPI authentication. This is a mechanism which delegates the
@@ -3802,17 +4056,30 @@ Chapter 4: Configuring PuTTY
        but in practice is usually used with the Kerberos single sign-on
        protocol to implement passwordless login.
 
-       GSSAPI is only available in the SSH-2 protocol.
+       GSSAPI authentication is only available in the SSH-2 protocol.
 
-       The topmost control on the GSSAPI subpanel is the checkbox labelled
-       `Attempt GSSAPI authentication'. If this is disabled, GSSAPI will
-       not be attempted at all and the rest of this panel is unused. If it
-       is enabled, GSSAPI authentication will be attempted, and (typically)
-       if your client machine has valid Kerberos credentials loaded, then
-       PuTTY should be able to authenticate automatically to servers that
-       support Kerberos logins.
+       PuTTY supports two forms of GSSAPI-based authentication. In one of
+       them, the SSH key exchange happens in the normal way, and GSSAPI
+       is only involved in authenticating the user. The checkbox labelled
+       `Attempt GSSAPI authentication' controls this form.
 
-4.23.1 `Allow GSSAPI credential delegation'
+       In the other method, GSSAPI-based authentication is combined
+       with the SSH key exchange phase. If this succeeds, then the SSH
+       authentication step has nothing left to do. See section 4.20.1.1 for
+       more information about this method. The checkbox labelled `Attempt
+       GSSAPI key exchange' controls this form. (The same checkbox appears
+       on the `Kex' panel.)
+
+       If one or both of these controls is enabled, then GSSAPI
+       authentication will be attempted in one form or the other, and
+       (typically) if your client machine has valid Kerberos credentials
+       loaded, then PuTTY should be able to authenticate automatically to
+       servers that support Kerberos logins.
+
+       If both of those checkboxes are disabled, PuTTY will not try any
+       form of GSSAPI at all, and the rest of this panel will be unused.
+
+4.24.1 `Allow GSSAPI credential delegation'
 
        GSSAPI credential delegation is a mechanism for passing on your
        Kerberos (or other) identity to the session on the SSH server. If
@@ -3835,18 +4102,22 @@ Chapter 4: Configuring PuTTY
        other services too; so this would typically be less of a risk than
        SSH agent forwarding.
 
-4.23.2 Preference order for GSSAPI libraries
+       If your connection is not using GSSAPI key exchange, it is possible
+       for the delegation to expire during your session. See section
+       4.20.1.1 for more information.
+
+4.24.2 Preference order for GSSAPI libraries
 
        GSSAPI is a mechanism which allows more than one authentication
        method to be accessed through the same interface. Therefore, more
        than one authentication library may exist on your system which can
        be accessed using GSSAPI.
 
-       PuTTY contains native support for a few well-known such libraries,
-       and will look for all of them on your system and use whichever it
-       finds. If more than one exists on your system and you need to use a
-       specific one, you can adjust the order in which it will search using
-       this preference list control.
+       PuTTY contains native support for a few well-known such libraries
+       (including Windows' SSPI), and will look for all of them on your
+       system and use whichever it finds. If more than one exists on your
+       system and you need to use a specific one, you can adjust the order
+       in which it will search using this preference list control.
 
        One of the options in the preference list is to use a user-specified
        GSSAPI library. If the library you want to use is not mentioned by
@@ -3861,11 +4132,11 @@ Chapter 4: Configuring PuTTY
        of PuTTY, and the same with 64-bit (see question A.6.10). On Unix,
        shared libraries generally have a .so extension.
 
-  4.24 The TTY panel
+  4.25 The TTY panel
 
        The TTY panel lets you configure the remote pseudo-terminal.
 
-4.24.1 `Don't allocate a pseudo-terminal'
+4.25.1 `Don't allocate a pseudo-terminal'
 
        When connecting to a Unix system, most interactive shell sessions
        are run in a _pseudo-terminal_, which allows the Unix system to
@@ -3878,7 +4149,7 @@ Chapter 4: Configuring PuTTY
        very specialist purposes; although in Plink (see chapter 7) it is
        the usual way of working.
 
-4.24.2 Sending terminal modes
+4.25.2 Sending terminal modes
 
        The SSH protocol allows the client to send `terminal modes' for
        the remote pseudo-terminal. These usually control the server's
@@ -3965,9 +4236,9 @@ Chapter 4: Configuring PuTTY
            at all. When set to `Auto', this follows the local configured
            character set (see section 4.10.1).
 
-        -  Terminal speeds are configured elsewhere; see section 4.14.4.
+        -  Terminal speeds are configured elsewhere; see section 4.15.4.
 
-  4.25 The X11 panel
+  4.26 The X11 panel
 
        The X11 panel allows you to configure forwarding of X11 over an SSH
        connection.
@@ -3984,7 +4255,7 @@ Chapter 4: Configuring PuTTY
 
        See section 3.4 for more information about X11 forwarding.
 
-4.25.1 Remote X11 authentication
+4.26.1 Remote X11 authentication
 
        If you are using X11 forwarding, the virtual X server created on the
        SSH server machine will be protected by authorisation data. This
@@ -4029,7 +4300,7 @@ Chapter 4: Configuring PuTTY
        PuTTY's default is MIT-MAGIC-COOKIE-1. If you change it, you should
        be sure you know what you're doing.
 
-4.25.2 X authority file for local display
+4.26.2 X authority file for local display
 
        If you are using X11 forwarding, the local X server to which your
        forwarded connections are eventually directed may itself require
@@ -4048,7 +4319,7 @@ Chapter 4: Configuring PuTTY
        configuring this option. By default, PuTTY will not attempt to find
        any authorisation for your local display.
 
-  4.26 The Tunnels panel
+  4.27 The Tunnels panel
 
        The Tunnels panel allows you to configure tunnelling of arbitrary
        connection types through an SSH connection.
@@ -4130,10 +4401,10 @@ Chapter 4: Configuring PuTTY
        If the connection you are forwarding over SSH is itself a second
        SSH connection made by another copy of PuTTY, you might find the
        `logical host name' configuration option useful to warn PuTTY of
-       which host key it should be expecting. See section 4.13.5 for
+       which host key it should be expecting. See section 4.14.5 for
        details of this.
 
-4.26.1 Controlling the visibility of forwarded ports
+4.27.1 Controlling the visibility of forwarded ports
 
        The source port for a forwarded connection usually does not accept
        connections from any machine except the SSH client or server machine
@@ -4152,7 +4423,7 @@ Chapter 4: Configuring PuTTY
            not all SSH-2 servers support it (OpenSSH 3.0 does not, for
            example).
 
-4.26.2 Selecting Internet protocol version for forwarded ports
+4.27.2 Selecting Internet protocol version for forwarded ports
 
        This switch allows you to select a specific Internet protocol (IPv4
        or IPv6) for the local end of a forwarded port. By default, it is
@@ -4165,7 +4436,7 @@ Chapter 4: Configuring PuTTY
            sensible protocol for the outgoing connection.
 
        This overrides the general Internet protocol version preference on
-       the Connection panel (see section 4.13.4).
+       the Connection panel (see section 4.14.4).
 
        Note that some operating systems may listen for incoming connections
        in IPv4 even if you specifically asked for IPv6, because their IPv4
@@ -4177,7 +4448,7 @@ Chapter 4: Configuring PuTTY
        `Auto' should always give you a port which you can connect to using
        either protocol.
 
-  4.27 The Bugs and More Bugs panels
+  4.28 The Bugs and More Bugs panels
 
        Not all SSH servers work properly. Various existing servers have
        bugs in them, which can make it impossible for a client to talk to
@@ -4203,63 +4474,7 @@ Chapter 4: Configuring PuTTY
         -  `Auto': PuTTY will use the server's version number announcement
            to try to guess whether or not the server has the bug.
 
-4.27.1 `Chokes on SSH-1 ignore messages'
-
-       An ignore message (SSH_MSG_IGNORE) is a message in the SSH protocol
-       which can be sent from the client to the server, or from the server
-       to the client, at any time. Either side is required to ignore the
-       message whenever it receives it. PuTTY uses ignore messages to hide
-       the password packet in SSH-1, so that a listener cannot tell the
-       length of the user's password; it also uses ignore messages for
-       connection keepalives (see section 4.13.1).
-
-       If this bug is detected, PuTTY will stop using ignore messages.
-       This means that keepalives will stop working, and PuTTY will
-       have to fall back to a secondary defence against SSH-1 password-
-       length eavesdropping. See section 4.27.2. If this bug is enabled
-       when talking to a correct server, the session will succeed, but
-       keepalives will not work and the session might be more vulnerable to
-       eavesdroppers than it could be.
-
-4.27.2 `Refuses all SSH-1 password camouflage'
-
-       When talking to an SSH-1 server which cannot deal with ignore
-       messages (see section 4.27.1), PuTTY will attempt to disguise the
-       length of the user's password by sending additional padding _within_
-       the password packet. This is technically a violation of the SSH-
-       1 specification, and so PuTTY will only do it when it cannot use
-       standards-compliant ignore messages as camouflage. In this sense,
-       for a server to refuse to accept a padded password packet is not
-       really a bug, but it does make life inconvenient if the server can
-       also not handle ignore messages.
-
-       If this `bug' is detected, PuTTY will assume that neither ignore
-       messages nor padding are acceptable, and that it thus has no choice
-       but to send the user's password with no form of camouflage, so
-       that an eavesdropping user will be easily able to find out the
-       exact length of the password. If this bug is enabled when talking
-       to a correct server, the session will succeed, but will be more
-       vulnerable to eavesdroppers than it could be.
-
-       This is an SSH-1-specific bug. SSH-2 is secure against this type of
-       attack.
-
-4.27.3 `Chokes on SSH-1 RSA authentication'
-
-       Some SSH-1 servers cannot deal with RSA authentication messages at
-       all. If Pageant is running and contains any SSH-1 keys, PuTTY will
-       normally automatically try RSA authentication before falling back
-       to passwords, so these servers will crash when they see the RSA
-       attempt.
-
-       If this bug is detected, PuTTY will go straight to password
-       authentication. If this bug is enabled when talking to a correct
-       server, the session will succeed, but of course RSA authentication
-       will be impossible.
-
-       This is an SSH-1-specific bug.
-
-4.27.4 `Chokes on SSH-2 ignore messages'
+4.28.1 `Chokes on SSH-2 ignore messages'
 
        An ignore message (SSH_MSG_IGNORE) is a message in the SSH protocol
        which can be sent from the client to the server, or from the server
@@ -4267,14 +4482,32 @@ Chapter 4: Configuring PuTTY
        message whenever it receives it. PuTTY uses ignore messages in
        SSH-2 to confuse the encrypted data stream and make it harder to
        cryptanalyse. It also uses ignore messages for connection keepalives
-       (see section 4.13.1).
+       (see section 4.14.1).
 
        If it believes the server to have this bug, PuTTY will stop using
        ignore messages. If this bug is enabled when talking to a correct
        server, the session will succeed, but keepalives will not work and
        the session might be less cryptographically secure than it could be.
 
-4.27.5 `Chokes on PuTTY's SSH-2 `winadj' requests'
+4.28.2 `Handles SSH-2 key re-exchange badly'
+
+       Some SSH servers cannot cope with repeat key exchange at all, and
+       will ignore attempts by the client to start one. Since PuTTY pauses
+       the session while performing a repeat key exchange, the effect of
+       this would be to cause the session to hang after an hour (unless
+       you have your rekey timeout set differently; see section 4.20.2 for
+       more about rekeys). Other, very old, SSH servers handle repeat key
+       exchange even more badly, and disconnect upon receiving a repeat key
+       exchange request.
+
+       If this bug is detected, PuTTY will never initiate a repeat key
+       exchange. If this bug is enabled when talking to a correct server,
+       the session should still function, but may be less secure than you
+       would expect.
+
+       This is an SSH-2-specific bug.
+
+4.28.3 `Chokes on PuTTY's SSH-2 `winadj' requests'
 
        PuTTY sometimes sends a special request to SSH servers in the middle
        of channel data, with the name winadj@putty.projects.tartarus.org
@@ -4295,36 +4528,42 @@ Chapter 4: Configuring PuTTY
        its `winadj@putty.projects.tartarus.org' request, and will make do
        without its timing data.
 
-4.27.6 `Miscomputes SSH-2 HMAC keys'
+4.28.4 `Replies to requests on closed channels'
 
-       Versions 2.3.0 and below of the SSH server software from ssh.com
-       compute the keys for their HMAC message authentication codes
-       incorrectly. A typical symptom of this problem is that PuTTY dies
-       unexpectedly at the beginning of the session, saying `Incorrect MAC
-       received on packet'.
+       The SSH protocol as published in RFC 4254 has an ambiguity which
+       arises if one side of a connection tries to close a channel, while
+       the other side simultaneously sends a request within the channel and
+       asks for a reply. RFC 4254 leaves it unclear whether the closing
+       side should reply to the channel request after having announced its
+       intention to close the channel.
 
-       If this bug is detected, PuTTY will compute its HMAC keys in the
-       same way as the buggy server, so that communication will still be
-       possible. If this bug is enabled when talking to a correct server,
-       communication will fail.
+       Discussion on the ietf-ssh mailing list in April 2014 formed a clear
+       consensus that the right answer is no. However, because of the
+       ambiguity in the specification, some SSH servers have implemented
+       the other policy; for example, OpenSSH used to until it was fixed.
 
-       This is an SSH-2-specific bug.
+       Because PuTTY sends channel requests with the `want reply'
+       flag throughout channels' lifetime (see section 4.28.3), it's
+       possible that when connecting to such a server it might receive
+       a reply to a request after it thinks the channel has entirely
+       closed, and terminate with an error along the lines of `Received
+       SSH2_MSG_CHANNEL_FAILURE for nonexistent channel 256'.
 
-4.27.7 `Miscomputes SSH-2 encryption keys'
+4.28.5 `Ignores SSH-2 maximum packet size'
 
-       Versions below 2.0.11 of the SSH server software from ssh.com
-       compute the keys for the session encryption incorrectly. This
-       problem can cause various error messages, such as `Incoming packet
-       was garbled on decryption', or possibly even `Out of memory'.
+       When an SSH-2 channel is set up, each end announces the maximum size
+       of data packet that it is willing to receive for that channel. Some
+       servers ignore PuTTY's announcement and send packets larger than
+       PuTTY is willing to accept, causing it to report `Incoming packet
+       was garbled on decryption'.
 
-       If this bug is detected, PuTTY will compute its encryption keys
-       in the same way as the buggy server, so that communication will
-       still be possible. If this bug is enabled when talking to a correct
-       server, communication will fail.
+       If this bug is detected, PuTTY never allows the channel's flow-
+       control window to grow large enough to allow the server to send an
+       over-sized packet. If this bug is enabled when talking to a correct
+       server, the session will work correctly, but download performance
+       will be less than it could be.
 
-       This is an SSH-2-specific bug.
-
-4.27.8 `Requires padding on SSH-2 RSA signatures'
+4.28.6 `Requires padding on SSH-2 RSA signatures'
 
        Versions below 3.3 of OpenSSH require SSH-2 RSA signatures to be
        padded with zero bytes to the same length as the RSA key modulus.
@@ -4341,7 +4580,37 @@ Chapter 4: Configuring PuTTY
 
        This is an SSH-2-specific bug.
 
-4.27.9 `Misuses the session ID in SSH-2 PK auth'
+4.28.7 `Only supports pre-RFC4419 SSH-2 DH GEX'
+
+       The SSH key exchange method that uses Diffie-Hellman group exchange
+       was redesigned after its original release, to use a slightly more
+       sophisticated setup message. Almost all SSH implementations switched
+       over to the new version. (PuTTY was one of the last.) A few old
+       servers still only support the old one.
+
+       If this bug is detected, and the client and server negotiate Diffie-
+       Hellman group exchange, then PuTTY will send the old message now
+       known as SSH2_MSG_KEX_DH_GEX_REQUEST_OLD in place of the new
+       SSH2_MSG_KEX_DH_GEX_REQUEST.
+
+       This is an SSH-2-specific bug.
+
+4.28.8 `Miscomputes SSH-2 HMAC keys'
+
+       Versions 2.3.0 and below of the SSH server software from ssh.com
+       compute the keys for their HMAC message authentication codes
+       incorrectly. A typical symptom of this problem is that PuTTY dies
+       unexpectedly at the beginning of the session, saying `Incorrect MAC
+       received on packet'.
+
+       If this bug is detected, PuTTY will compute its HMAC keys in the
+       same way as the buggy server, so that communication will still be
+       possible. If this bug is enabled when talking to a correct server,
+       communication will fail.
+
+       This is an SSH-2-specific bug.
+
+4.28.9 `Misuses the session ID in SSH-2 PK auth'
 
        Versions below 2.3 of OpenSSH require SSH-2 public-key
        authentication to be done slightly differently: the data to be
@@ -4357,80 +4626,82 @@ Chapter 4: Configuring PuTTY
 
        This is an SSH-2-specific bug.
 
-4.27.10 `Handles SSH-2 key re-exchange badly'
+4.28.10 `Miscomputes SSH-2 encryption keys'
 
-       Some SSH servers cannot cope with repeat key exchange at all, and
-       will ignore attempts by the client to start one. Since PuTTY pauses
-       the session while performing a repeat key exchange, the effect of
-       this would be to cause the session to hang after an hour (unless
-       you have your rekey timeout set differently; see section 4.19.2 for
-       more about rekeys). Other, very old, SSH servers handle repeat key
-       exchange even more badly, and disconnect upon receiving a repeat key
-       exchange request.
+       Versions below 2.0.11 of the SSH server software from ssh.com
+       compute the keys for the session encryption incorrectly. This
+       problem can cause various error messages, such as `Incoming packet
+       was garbled on decryption', or possibly even `Out of memory'.
 
-       If this bug is detected, PuTTY will never initiate a repeat key
-       exchange. If this bug is enabled when talking to a correct server,
-       the session should still function, but may be less secure than you
-       would expect.
+       If this bug is detected, PuTTY will compute its encryption keys
+       in the same way as the buggy server, so that communication will
+       still be possible. If this bug is enabled when talking to a correct
+       server, communication will fail.
 
        This is an SSH-2-specific bug.
 
-4.27.11 `Ignores SSH-2 maximum packet size'
+4.28.11 `Chokes on SSH-1 ignore messages'
 
-       When an SSH-2 channel is set up, each end announces the maximum size
-       of data packet that it is willing to receive for that channel. Some
-       servers ignore PuTTY's announcement and send packets larger than
-       PuTTY is willing to accept, causing it to report `Incoming packet
-       was garbled on decryption'.
+       An ignore message (SSH_MSG_IGNORE) is a message in the SSH protocol
+       which can be sent from the client to the server, or from the server
+       to the client, at any time. Either side is required to ignore the
+       message whenever it receives it. PuTTY uses ignore messages to hide
+       the password packet in SSH-1, so that a listener cannot tell the
+       length of the user's password; it also uses ignore messages for
+       connection keepalives (see section 4.14.1).
 
-       If this bug is detected, PuTTY never allows the channel's flow-
-       control window to grow large enough to allow the server to send an
-       over-sized packet. If this bug is enabled when talking to a correct
-       server, the session will work correctly, but download performance
-       will be less than it could be.
+       If this bug is detected, PuTTY will stop using ignore messages.
+       This means that keepalives will stop working, and PuTTY will
+       have to fall back to a secondary defence against SSH-1 password-
+       length eavesdropping. See section 4.28.12. If this bug is enabled
+       when talking to a correct server, the session will succeed, but
+       keepalives will not work and the session might be more vulnerable to
+       eavesdroppers than it could be.
 
-4.27.12 `Replies to requests on closed channels'
+4.28.12 `Refuses all SSH-1 password camouflage'
 
-       The SSH protocol as published in RFC 4254 has an ambiguity which
-       arises if one side of a connection tries to close a channel, while
-       the other side simultaneously sends a request within the channel and
-       asks for a reply. RFC 4254 leaves it unclear whether the closing
-       side should reply to the channel request after having announced its
-       intention to close the channel.
+       When talking to an SSH-1 server which cannot deal with ignore
+       messages (see section 4.28.11), PuTTY will attempt to disguise the
+       length of the user's password by sending additional padding _within_
+       the password packet. This is technically a violation of the SSH-
+       1 specification, and so PuTTY will only do it when it cannot use
+       standards-compliant ignore messages as camouflage. In this sense,
+       for a server to refuse to accept a padded password packet is not
+       really a bug, but it does make life inconvenient if the server can
+       also not handle ignore messages.
 
-       Discussion on the ietf-ssh mailing list in April 2014 formed a clear
-       consensus that the right answer is no. However, because of the
-       ambiguity in the specification, some SSH servers have implemented
-       the other policy; for example, OpenSSH used to until it was fixed.
+       If this `bug' is detected, PuTTY will assume that neither ignore
+       messages nor padding are acceptable, and that it thus has no choice
+       but to send the user's password with no form of camouflage, so
+       that an eavesdropping user will be easily able to find out the
+       exact length of the password. If this bug is enabled when talking
+       to a correct server, the session will succeed, but will be more
+       vulnerable to eavesdroppers than it could be.
 
-       Because PuTTY sends channel requests with the `want reply'
-       flag throughout channels' lifetime (see section 4.27.5), it's
-       possible that when connecting to such a server it might receive
-       a reply to a request after it thinks the channel has entirely
-       closed, and terminate with an error along the lines of `Received
-       SSH2_MSG_CHANNEL_FAILURE for nonexistent channel 256'.
+       This is an SSH-1-specific bug. SSH-2 is secure against this type of
+       attack.
 
-4.27.13 `Only supports pre-RFC4419 SSH-2 DH GEX'
+4.28.13 `Chokes on SSH-1 RSA authentication'
 
-       The SSH key exchange method that uses Diffie-Hellman group exchange
-       was redesigned after its original release, to use a slightly more
-       sophisticated setup message. Almost all SSH implementations switched
-       over to the new version. (PuTTY was one of the last.) A few old
-       servers still only support the old one.
+       Some SSH-1 servers cannot deal with RSA authentication messages at
+       all. If Pageant is running and contains any SSH-1 keys, PuTTY will
+       normally automatically try RSA authentication before falling back
+       to passwords, so these servers will crash when they see the RSA
+       attempt.
 
-       If this bug is detected, and the client and server negotiate Diffie-
-       Hellman group exchange, then PuTTY will send the old message now
-       known as SSH2_MSG_KEX_DH_GEX_REQUEST_OLD in place of the new
-       SSH2_MSG_KEX_DH_GEX_REQUEST.
+       If this bug is detected, PuTTY will go straight to password
+       authentication. If this bug is enabled when talking to a correct
+       server, the session will succeed, but of course RSA authentication
+       will be impossible.
 
-       This is an SSH-2-specific bug.
+       This is an SSH-1-specific bug.
 
-  4.28 The Serial panel
+  4.29 The Serial panel
 
        The Serial panel allows you to configure options that only apply
        when PuTTY is connecting to a local serial line.
 
-4.28.1 Selecting a serial line to connect to
+4.29.1 Selecting a serial line to connect to
 
        The `Serial line to connect to' box allows you to choose which
        serial line you want PuTTY to talk to, if your computer has more
@@ -4443,7 +4714,7 @@ Chapter 4: Configuring PuTTY
        where it replaces the `Host Name' box (see section 4.1.1) if the
        connection type is set to `Serial'.
 
-4.28.2 Selecting the speed of your serial line
+4.29.2 Selecting the speed of your serial line
 
        The `Speed' box allows you to choose the speed (or `baud rate') at
        which to talk to the serial line. Typical values might be 9600,
@@ -4455,18 +4726,18 @@ Chapter 4: Configuring PuTTY
        where it replaces the `Port' box (see section 4.1.1) if the
        connection type is set to `Serial'.
 
-4.28.3 Selecting the number of data bits
+4.29.3 Selecting the number of data bits
 
        The `Data bits' box allows you to choose how many data bits are
        transmitted in each byte sent or received through the serial line.
        Typical values are 7 or 8.
 
-4.28.4 Selecting the number of stop bits
+4.29.4 Selecting the number of stop bits
 
        The `Stop bits' box allows you to choose how many stop bits are used
        in the serial line protocol. Typical values are 1, 1.5 or 2.
 
-4.28.5 Selecting the serial parity checking scheme
+4.29.5 Selecting the serial parity checking scheme
 
        The `Parity' box allows you to choose what type of parity checking
        is used on the serial line. The settings are:
@@ -4485,7 +4756,7 @@ Chapter 4: Configuring PuTTY
         -  `Space': an extra parity bit is sent alongside each byte, and
            always set to 0.
 
-4.28.6 Selecting the serial flow control scheme
+4.29.6 Selecting the serial flow control scheme
 
        The `Flow control' box allows you to choose what type of flow
        control checking is used on the serial line. The settings are:
@@ -4502,7 +4773,7 @@ Chapter 4: Configuring PuTTY
         -  `DSR/DTR': flow control is done using the DSR and DTR wires on
            the serial line.
 
-  4.29 Storing configuration in a file
+  4.30 Storing configuration in a file
 
        PuTTY does not currently support storing its configuration in a file
        instead of the Registry. However, you can work around this with a
@@ -4532,13 +4803,13 @@ Chapter 4: Configuring PuTTY
        Here is `PUTTYDEL.REG':
 
          REGEDIT4
-          
+         
          [-HKEY_CURRENT_USER\Software\SimonTatham\PuTTY]
 
        Here is an example `PUTTYRND.REG' file:
 
          REGEDIT4
-          
+         
          [HKEY_CURRENT_USER\Software\SimonTatham\PuTTY]
          "RandSeedFile"="a:\\putty.rnd"
 
@@ -4585,9 +4856,9 @@ Chapter 5: Using PSCP to transfer files securely
        version of PSCP you're using, and gives you a brief summary of how
        to use PSCP:
 
-         Z:\owendadmin>pscp
+         C:\>pscp
          PuTTY Secure Copy client
-         Release 0.70
+         Release 0.74
          Usage: pscp [options] [user@]host:source target
                 pscp [options] source [source...] [user@]host:target
                 pscp [options] -ls [user@]host:filespec
@@ -4611,6 +4882,7 @@ Chapter 5: Using PSCP to transfer files securely
            -hostkey aa:bb:cc:...
                      manually specify a host key (may be repeated)
            -batch    disable all interactive prompts
+           -no-sanitise-stderr  don't strip control chars from standard error
            -proxycmd command
                      use 'command' as local proxy
            -unsafe   allow server-side wildcards (DANGEROUS)
@@ -4824,6 +5096,15 @@ Chapter 5: Using PSCP to transfer files securely
        When this option is specified, PSCP looks harder for an SFTP server,
        which may allow use of SFTP with SSH-1 depending on server setup.
 
+5.2.2.7 `-no-sanitise-stderr': control error message sanitisation
+
+       The `-no-sanitise-stderr' option will cause PSCP to pass through the
+       server's standard-error stream literally, without stripping control
+       characters from it first. This might be useful if the server were
+       sending coloured error messages, but it also gives the server the
+       ability to have unexpected effects on your terminal display. For
+       more discussion, see section 7.2.3.5.
+
  5.2.3 Return value
 
        PSCP returns an ERRORLEVEL of zero (success) only if the files were
@@ -4842,9 +5123,9 @@ Chapter 5: Using PSCP to transfer files securely
        (see section 5.2.1.2). So you would do this:
 
         -  Run PuTTY, and create a PuTTY saved session (see section 4.1.2)
-           which specifies your private key file (see section 4.22.8). You
+           which specifies your private key file (see section 4.23.8). You
            will probably also want to specify a username to log in as (see
-           section 4.14.1).
+           section 4.15.1).
 
         -  In PSCP, you can now use the name of the session instead of
            a hostname: type `pscp sessionname:file localfile', where
@@ -5001,6 +5282,15 @@ Chapter 6: Using PSFTP to transfer files securely
        This may help PSFTP's behaviour when it is used in automated
        scripts: using `-batch', if something goes wrong at connection time,
        the batch job will fail rather than hang.
+
+6.1.4.1 `-no-sanitise-stderr': control error message sanitisation
+
+       The `-no-sanitise-stderr' option will cause PSFTP to pass through
+       the server's standard-error stream literally, without stripping
+       control characters from it first. This might be useful if the server
+       were sending coloured error messages, but it also gives the server
+       the ability to have unexpected effects on your terminal display. For
+       more discussion, see section 7.2.3.5.
 
    6.2 Running PSFTP
 
@@ -5415,9 +5705,9 @@ Chapter 6: Using PSFTP to transfer files securely
        So you might do this:
 
         -  Run PuTTY, and create a PuTTY saved session (see section 4.1.2)
-           which specifies your private key file (see section 4.22.8). You
+           which specifies your private key file (see section 4.23.8). You
            will probably also want to specify a username to log in as (see
-           section 4.14.1).
+           section 4.15.1).
 
         -  In PSFTP, you can now use the name of the session instead of
            a hostname: type `psftp sessionname', where `sessionname' is
@@ -5481,9 +5771,9 @@ Chapter 7: Using the command-line connection tool Plink
        version of Plink you're using, and gives you a brief summary of how
        to use Plink:
 
-         Z:\sysosd>plink
+         C:\>plink
          Plink: command-line connection utility
-         Release 0.70
+         Release 0.74
          Usage: plink [options] [user@]host [command]
                 ("host" can also be a PuTTY saved session name)
          Options:
@@ -5517,8 +5807,13 @@ Chapter 7: Using the command-line connection tool Plink
            -i key    private key file for user authentication
            -noagent  disable use of Pageant
            -agent    enable use of Pageant
+           -noshare  disable use of connection sharing
+           -share    enable use of connection sharing
            -hostkey aa:bb:cc:...
                      manually specify a host key (may be repeated)
+           -sanitise-stderr, -sanitise-stdout, -no-sanitise-stderr, -no-sanitise-stdout
+                     do/don't strip control chars from standard output/error
+           -no-antispoof   omit anti-spoofing prompt after authentication
            -m file   read remote command(s) from file
            -s        remote command is an SSH subsystem (SSH-2 only)
            -N        don't start a shell/command (SSH-2 only)
@@ -5537,7 +5832,7 @@ Chapter 7: Using the command-line connection tool Plink
        To make a simple interactive connection to a remote server, just
        type `plink' and then the host name:
 
-         Z:\sysosd>plink login.example.com
+         C:\>plink login.example.com
          
          Debian GNU/Linux 2.2 flunky.example.com
          flunky login:
@@ -5554,7 +5849,7 @@ Chapter 7: Using the command-line connection tool Plink
        command line options `-ssh', `-telnet', `-rlogin' or `-raw'. To make
        an SSH connection, for example:
 
-         Z:\sysosd>plink -ssh login.example.com
+         C:\>plink -ssh login.example.com
          login as:
 
        If you have already set up a PuTTY saved session, then instead of
@@ -5562,7 +5857,7 @@ Chapter 7: Using the command-line connection tool Plink
        allows you to use public-key authentication, specify a user name,
        and use most of the other features of PuTTY:
 
-         Z:\sysosd>plink my-ssh-session
+         C:\>plink my-ssh-session
          Sent username "fred"
          Authenticating with public key "fred@winbox"
          Last login: Thu Dec  6 19:25:33 2001 from :0.0
@@ -5613,7 +5908,7 @@ Chapter 7: Using the command-line connection tool Plink
 
         -  Set up a PuTTY saved session that describes the server you are
            connecting to, and that also specifies the username to log in as
-           (see section 4.14.1).
+           (see section 4.15.1).
 
        To avoid being prompted for a password, you should almost certainly
        set up public-key authentication. (See chapter 8 for a general
@@ -5622,7 +5917,7 @@ Chapter 7: Using the command-line connection tool Plink
 
         -  Set up a PuTTY saved session that describes the server you
            are connecting to, and that also specifies a private key file
-           (see section 4.22.8). For this to work without prompting, your
+           (see section 4.23.8). For this to work without prompting, your
            private key will need to have no passphrase.
 
         -  Store the private key in Pageant. See chapter 9 for further
@@ -5632,18 +5927,18 @@ Chapter 7: Using the command-line connection tool Plink
        command on the SSH server machine and have it execute automatically
        with no prompting:
 
-         Z:\sysosd>plink login.example.com -l fred echo hello, world
+         C:\>plink login.example.com -l fred echo hello, world
          hello, world
          
-         Z:\sysosd>
+         C:\>
 
        Or, if you have set up a saved session with all the connection
        details:
 
-         Z:\sysosd>plink mysession echo hello, world
+         C:\>plink mysession echo hello, world
          hello, world
          
-         Z:\sysosd>
+         C:\>
 
        Then you can set up other programs to run this Plink command and
        talk to it as if it were a process on the server machine.
@@ -5675,11 +5970,31 @@ Chapter 7: Using the command-line connection tool Plink
 
        (This option is only meaningful with the SSH-2 protocol.)
 
-7.2.3.3 `-shareexists': test for connection-sharing upstream
+7.2.3.3 `-share': Test and try to share an existing connection.
+
+       This option tris to detect if an existing connection can be shared
+       (See section 4.19.5 for more information about SSH connection
+       sharing.) and reuses that connection.
+
+       A Plink invocation of the form:
+
+         plink -share <session>
+
+       will test whether there is currently a viable `upstream' for the
+       session in question, which can be specified using any syntax you'd
+       normally use with Plink to make an actual connection (a host/port
+       number, a bare saved session name, `-load', etc). If no `upstream'
+       viable session is found and `-share' is specified, this connection
+       will be become the `upstream' connection for subsequent connection
+       sharing tries.
+
+       (This option is only meaningful with the SSH-2 protocol.)
+
+7.2.3.4 `-shareexists': test for connection-sharing upstream
 
        This option does not make a new connection; instead it allows
        testing for the presence of an existing connection that can
-       be shared. (See section 4.18.5 for more information about SSH
+       be shared. (See section 4.19.5 for more information about SSH
        connection sharing.)
 
        A Plink invocation of the form:
@@ -5693,6 +6008,93 @@ Chapter 7: Using the command-line connection tool Plink
        exit status if a usable `upstream' exists, nonzero otherwise.
 
        (This option is only meaningful with the SSH-2 protocol.)
+
+7.2.3.5 `-sanitise-'_stream_: control output sanitisation
+
+       In some situations, Plink applies a sanitisation pass to the output
+       received from the server, to strip out control characters such as
+       backspace and the escape character.
+
+       The idea of this is to prevent remote processes from sending
+       confusing escape sequences through the standard error channel when
+       Plink is being used as a transport for something like git or CVS. If
+       the server actually wants to send an error message, it will probably
+       be plain text; if the server abuses that channel to try to write
+       over unexpected parts of your terminal display, Plink will try to
+       stop it.
+
+       By default, this only happens for output channels which are sent
+       to a Windows console device, or a Unix terminal device. (Any
+       output stream going somewhere else is likely to be needed by an 8-
+       bit protocol and must not be tampered with at all.) It also stops
+       happening if you tell Plink to allocate a remote pseudo-terminal
+       (see section 3.8.3.12 and section 4.25.1), on the basis that in that
+       situation you often _want_ escape sequences from the server to go to
+       your terminal.
+
+       But in case Plink guesses wrong about whether you want this
+       sanitisation, you can override it in either direction, using one of
+       these options:
+
+           `-sanitise-stderr'
+
+       Sanitise server data written to Plink's standard error channel,
+       regardless of terminals and consoles and remote ptys.
+
+           `-no-sanitise-stderr'
+
+       Do not sanitise server data written to Plink's standard error
+       channel.
+
+           `-sanitise-stdout'
+
+       Sanitise server data written to Plink's standard output channel.
+
+           `-no-sanitise-stdout'
+
+       Do not sanitise server data written to Plink's standard output
+       channel.
+
+7.2.3.6 : turn off authentication spoofing protection prompt
+
+       In SSH, some possible server authentication methods require user
+       input (for example, password authentication, or entering a private
+       key passphrase), and others do not (e.g. a private key held in
+       Pageant).
+
+       If you use Plink to run an interactive login session, and if Plink
+       authenticates without needing any user interaction, and if the
+       server is malicious or compromised, it could try to trick you into
+       giving it authentication data that should not go to the server (such
+       as your private key passphrase), by sending what _looks_ like one of
+       Plink's local prompts, as if Plink had not already authenticated.
+
+       To protect against this, Plink's default policy is to finish the
+       authentication phase with a final trivial prompt looking like this:
+
+         Access granted. Press Return to begin session.
+
+       so that if you saw anything that looked like an authentication
+       prompt _after_ that line, you would know it was not from Plink.
+
+       That extra interactive step is inconvenient. So Plink will turn it
+       off in as many situations as it can:
+
+        -  If Plink's standard input is not pointing at a console or
+           terminal device - for example, if you're using Plink as a
+           transport for some automated application like version control
+           - then you _can't_ type passphrases into the server anyway. In
+           that situation, Plink won't try to protect you from the server
+           trying to fool you into doing so.
+
+        -  If Plink is in batch mode (see section 7.2.2), then it _never_
+           does any interactive authentication. So anything looking like an
+           interactive authentication prompt is automatically suspect, and
+           so Plink omits the anti-spoofing prompt.
+
+       But if you still find the protective prompt inconvenient, and you
+       trust the server not to try a trick like this, you can turn it off
+       using the `-no-antispoof' option.
 
    7.3 Using Plink in batch files and scripts
 
@@ -5825,7 +6227,7 @@ Chapter 8: Using public keys for SSH authentication
        the PuTTY authentication agent, Pageant (see chapter 9). PuTTYgen
        generates RSA, DSA, ECDSA, and Ed25519 keys.
 
-       When you run PuTTYgen you will see a window where you have two
+       When you run PuTTYgen you will see a window where you have two main
        choices: `Generate', to generate a new public/private key pair, or
        `Load' to load in an existing private key.
 
@@ -5849,11 +6251,11 @@ Chapter 8: Using public keys for SSH authentication
 
        Your key pair is now ready for use. You may also want to copy the
        public key to your server, either by copying it out of the `Public
-       key for pasting into authorized_keys file' box (see section 8.2.10),
-       or by using the `Save public key' button (section 8.2.9). However,
-       you don't need to do this immediately; if you want, you can load the
-       private key back into PuTTYgen later (see section 8.2.11) and the
-       public key will be available for copying and pasting again.
+       key for pasting into OpenSSH authorized_keys file' box (see section
+       8.2.10), or by using the `Save public key' button (section 8.2.9).
+       However, you don't need to do this immediately; if you want, you can
+       load the private key back into PuTTYgen later (see section 8.2.11)
+       and the public key will be available for copying and pasting again.
 
        Section 8.3 describes the typical process of configuring PuTTY to
        attempt public-key authentication, and configuring your SSH server
@@ -5862,10 +6264,10 @@ Chapter 8: Using public keys for SSH authentication
  8.2.2 Selecting the type of key
 
        Before generating a key pair using PuTTYgen, you need to select
-       which type of key you need. PuTTYgen currently supports these types
-       of key:
+       which type of key you need.
 
-        -  An RSA key for use with the SSH-1 protocol.
+       The current version of the SSH protocol, SSH-2, supports several
+       different key types. PuTTYgen can generate:
 
         -  An RSA key for use with the SSH-2 protocol.
 
@@ -5877,12 +6279,10 @@ Chapter 8: Using public keys for SSH authentication
         -  An Ed25519 key (another elliptic curve algorithm) for use with
            the SSH-2 protocol.
 
-       The SSH-1 protocol only supports RSA keys; if you will be connecting
-       using the SSH-1 protocol, you must select the first key type or your
-       key will be completely useless.
-
-       The SSH-2 protocol supports more than one key type. The types
-       supported by PuTTY are RSA, DSA, ECDSA, and Ed25519.
+       PuTTYgen can also generate an RSA key suitable for use with the
+       old SSH-1 protocol (which only supports RSA); for this, you need
+       to select the `SSH-1 (RSA)' option. Since the SSH-1 protocol is no
+       longer considered secure, it's rare to need this option.
 
  8.2.3 Selecting the size (strength) of the key
 
@@ -6007,7 +6407,7 @@ Chapter 8: Using public keys for SSH authentication
 
        This file is in PuTTY's native format (`*.PPK'); it is the one you
        will need to tell PuTTY to use for authentication (see section
-       4.22.8) or tell Pageant to load (see section 9.2.2).
+       4.23.8) or tell Pageant to load (see section 9.2.2).
 
  8.2.9 Saving your public key to a disk file
 
@@ -6031,17 +6431,18 @@ Chapter 8: Using public keys for SSH authentication
        for pasting' box. This is the only existing standard for SSH-1
        public keys.
 
-8.2.10 `Public key for pasting into authorized_keys file'
+8.2.10 `Public key for pasting into OpenSSH authorized_keys file'
 
-       All SSH-1 servers require your public key to be given to it in a
-       one-line format before it will accept authentication with your
-       private key. The OpenSSH server also requires this for SSH-2.
+       The OpenSSH server, among others, requires your public key
+       to be given to it in a one-line format before it will accept
+       authentication with your private key. (SSH-1 servers also used this
+       method.)
 
-       The `Public key for pasting into authorized_keys file' gives the
-       public-key data in the correct one-line format. Typically you will
-       want to select the entire contents of the box using the mouse, press
-       Ctrl+C to copy it to the clipboard, and then paste the data into a
-       PuTTY session which is already connected to the server.
+       The `Public key for pasting into OpenSSH authorized_keys file' gives
+       the public-key data in the correct one-line format. Typically you
+       will want to select the entire contents of the box using the mouse,
+       press Ctrl+C to copy it to the clipboard, and then paste the data
+       into a PuTTY session which is already connected to the server.
 
        See section 8.3 for general instructions on configuring public-key
        authentication once you have generated a key.
@@ -6066,15 +6467,9 @@ Chapter 8: Using public keys for SSH authentication
 
 8.2.12 Dealing with private keys in other formats
 
-       Most SSH-1 clients use a standard format for storing private keys on
-       disk. PuTTY uses this format as well; so if you have generated an
-       SSH-1 private key using OpenSSH or ssh.com's client, you can use it
-       with PuTTY, and vice versa.
-
-       However, SSH-2 private keys have no standard format. OpenSSH and
-       ssh.com have different formats, and PuTTY's is different again. So
-       a key generated with one client cannot immediately be used with
-       another.
+       SSH-2 private keys have no standard format. OpenSSH and ssh.com
+       have different formats, and PuTTY's is different again. So a key
+       generated with one client cannot immediately be used with another.
 
        Using the `Import' command from the `Conversions' menu, PuTTYgen can
        load SSH-2 private keys in OpenSSH's format and ssh.com's format.
@@ -6082,9 +6477,9 @@ Chapter 8: Using public keys for SSH authentication
        back out as a PuTTY-format key (`*.PPK') so that you can use it with
        the PuTTY suite. The passphrase will be unchanged by this process
        (unless you deliberately change it). You may want to change the key
-       comment before you save the key, since OpenSSH's SSH-2 key format
-       contains no space for a comment and ssh.com's default comment format
-       is long and verbose.
+       comment before you save the key, since some OpenSSH key formats
+       contained no space for a comment, and ssh.com's default comment
+       format is long and verbose.
 
        PuTTYgen can also export private keys in OpenSSH format and in
        ssh.com format. To do so, select one of the `Export' options from
@@ -6102,8 +6497,11 @@ Chapter 8: Using public keys for SSH authentication
        wanting to use OpenSSH's newer format even for RSA, DSA, or ECDSA
        keys, you can choose `Export OpenSSH key (force new file format)'.
 
-       Note that since only SSH-2 keys come in different formats, the
-       export options are not available if you have generated an SSH-1 key.
+       Most clients for the older SSH-1 protocol use a standard format for
+       storing private keys on disk. PuTTY uses this format as well; so if
+       you have generated an SSH-1 private key using OpenSSH or ssh.com's
+       client, you can use it with PuTTY, and vice versa. Hence, the export
+       options are not available if you have generated an SSH-1 key.
 
    8.3 Getting ready for public key authentication
 
@@ -6112,21 +6510,21 @@ Chapter 8: Using public keys for SSH authentication
        password to login. Once logged in, you must configure the server to
        accept your public key for authentication:
 
-        -  If your server is using the SSH-1 protocol, you should change
-           into the `.ssh' directory and open the file `authorized_keys'
-           with your favourite editor. (You may have to create this file if
-           this is the first key you have put in it). Then switch to the
-           PuTTYgen window, select all of the text in the `Public key for
-           pasting into authorized_keys file' box (see section 8.2.10), and
-           copy it to the clipboard (`Ctrl+C'). Then, switch back to the
-           PuTTY window and insert the data into the open file, making sure
-           it ends up all on one line. Save the file.
+        -  If your server is OpenSSH, you should change into the `.ssh'
+           directory under your home directory, and open the file
+           `authorized_keys' with your favourite editor. (You may have
+           to create this file, if this is the first key you have put in
+           it.) Then switch to the PuTTYgen window, select all of the text
+           in the `Public key for pasting into OpenSSH authorized_keys
+           file' box (see section 8.2.10), and copy it to the clipboard
+           (`Ctrl+C'). Then, switch back to the PuTTY window and insert the
+           data into the open file, making sure it ends up all on one line.
+           Save the file.
 
-        -  If your server is OpenSSH and is using the SSH-2 protocol,
-           you should follow the same instructions, except that
-           in earlier versions of OpenSSH 2 the file might be
-           called `authorized_keys2'. (In modern versions the same
-           `authorized_keys' file is used for both SSH-1 and SSH-2 keys.)
+           (In very old versions of OpenSSH, SSH-2 keys had to be put
+           in a separate file called `authorized_keys2'. In all current
+           versions, the same `authorized_keys' file is used for both SSH-1
+           and SSH-2 keys.)
 
         -  If your server is ssh.com's product and is using SSH-2, you need
            to save a _public_ key file from PuTTYgen (see section 8.2.9),
@@ -6142,7 +6540,8 @@ Chapter 8: Using public keys for SSH authentication
        You may also need to ensure that your home directory, your `.ssh'
        directory, and any other files involved (such as `authorized_keys',
        `authorized_keys2' or `authorization') are not group-writable or
-       world-writable. You can typically do this by using a command such as
+       world-writable; servers will typically ignore the keys unless this
+       is done. You can typically do this by using a command such as
 
          chmod go-w $HOME $HOME/.ssh $HOME/.ssh/authorized_keys
 
@@ -6152,7 +6551,7 @@ Chapter 8: Using public keys for SSH authentication
        three ways:
 
         -  Select the private key in PuTTY's configuration. See section
-           4.22.8 for details.
+           4.23.8 for details.
 
         -  Specify the key file on the command line with the `-i' option.
            See section 3.8.3.18 for details.
@@ -6203,7 +6602,7 @@ Chapter 9: Using Pageant for authentication
        passphrase again.
 
        (PuTTY can be configured not to try to use Pageant, but it will
-       try by default. See section 4.22.3 and section 3.8.3.9 for more
+       try by default. See section 4.23.3 and section 3.8.3.9 for more
        information.)
 
        When you want to shut down Pageant, click the right button on the
@@ -6229,12 +6628,12 @@ Chapter 9: Using Pageant for authentication
 
        For each key, the list box will tell you:
 
-        -  The type of the key. Currently, this can be `ssh1' (an RSA key
-           for use with the SSH-1 protocol), `ssh-rsa' (an RSA key for use
-           with the SSH-2 protocol), `ssh-dss' (a DSA key for use with the
-           SSH-2 protocol), `ecdsa-sha2-*' (an ECDSA key for use with the
-           SSH-2 protocol), or `ssh-ed25519' (an Ed25519 key for use with
-           the SSH-2 protocol).
+        -  The type of the key. Currently, this can be `ssh-rsa' (an RSA
+           key for use with the SSH-2 protocol), `ssh-dss' (a DSA key for
+           use with the SSH-2 protocol), `ecdsa-sha2-*' (an ECDSA key for
+           use with the SSH-2 protocol), `ssh-ed25519' (an Ed25519 key for
+           use with the SSH-2 protocol), or `ssh1' (an RSA key for use with
+           the old SSH-1 protocol).
 
         -  The size (in bits) of the key.
 
@@ -6313,18 +6712,30 @@ Chapter 9: Using Pageant for authentication
 
          C:\PuTTY\pageant.exe d:\main.ppk -c C:\PuTTY\putty.exe
 
+ 9.3.3 Restricting the Windows process ACL
+
+       Pageant supports the same `-restrict-acl' option as the other PuTTY
+       utilities to lock down the Pageant process's access control; see
+       section 3.8.3.25 for why you might want to do this.
+
+       By default, if Pageant is started with `-restrict-acl', it won't
+       pass this to any PuTTY sessions started from its System Tray
+       submenu. Use `-restrict-putty-acl' to change this. (Again, see
+       section 3.8.3.25 for details.)
+
    9.4 Using agent forwarding
 
        Agent forwarding is a mechanism that allows applications on your SSH
        server machine to talk to the agent on your client machine.
 
-       Note that at present, agent forwarding in SSH-2 is only available
-       when your SSH server is OpenSSH. The ssh.com server uses a different
-       agent protocol, which PuTTY does not yet support.
+       Note that at present, whether agent forwarding in SSH-2 is available
+       depends on your server. Pageant's protocol is compatible with the
+       OpenSSH server, but the ssh.com server uses a different agent
+       protocol, which PuTTY does not yet support.
 
        To enable agent forwarding, first start Pageant. Then set up a
        PuTTY SSH session in which `Allow agent forwarding' is enabled (see
-       section 4.22.6). Open the session as normal. (Alternatively, you can
+       section 4.23.6). Open the session as normal. (Alternatively, you can
        use the `-A' command line option; see section 3.8.3.10 for details.)
 
        If this has worked, your applications on the server should now have
@@ -6481,7 +6892,7 @@ Chapter 10: Common error messages
 
        See section 2.2 for more information on host keys.
 
-  10.3 `SSH protocol version 2 required by our configuration but server
+  10.3 `SSH protocol version 2 required by our configuration but remote
        only provides (old, insecure) SSH-1'
 
        By default, PuTTY only supports connecting to SSH servers that
@@ -6490,7 +6901,7 @@ Chapter 10: Common error messages
        protocol.
 
        If the server genuinely only supports SSH-1, then you need to either
-       change the `SSH protocol version' setting (see section 4.18.4), or
+       change the `SSH protocol version' setting (see section 4.19.4), or
        use the `-1' command-line option; in any case, you should not treat
        the resulting connection as secure.
 
@@ -6505,12 +6916,16 @@ Chapter 10: Common error messages
 
        This occurs when the SSH server does not offer any ciphers which you
        have configured PuTTY to consider strong enough. By default, PuTTY
-       puts up this warning only for single-DES and Arcfour encryption.
+       puts up this warning only for Blowfish, single-DES, and Arcfour
+       encryption.
 
-       See section 4.21 for more information on this message.
+       See section 4.22 for more information on this message.
 
-  10.5 `Server sent disconnect message type 2 (protocol error): "Too many
-       authentication failures for root"'
+       (There are similar messages for other cryptographic primitives, such
+       as host key algorithms.)
+
+  10.5 `Remote side sent disconnect message type 2 (protocol error): "Too
+       many authentication failures for root"'
 
        This message is produced by an OpenSSH (or Sun SSH) server if it
        receives more failed authentication attempts than it is willing to
@@ -6520,7 +6935,7 @@ Chapter 10: Common error messages
        number of keys loaded into it, since these servers count each offer
        of a public key as an authentication attempt. This can be worked
        around by specifying the key that's required for the authentication
-       in the PuTTY configuration (see section 4.22.8); PuTTY will ignore
+       in the PuTTY configuration (see section 4.23.8); PuTTY will ignore
        any other keys Pageant may have, but will ask Pageant to do the
        authentication, so that you don't have to type your passphrase.
 
@@ -6565,8 +6980,8 @@ Chapter 10: Common error messages
        bug in PuTTY. Please report it to us, and include the exact text
        from the error message box.
 
-  10.8 `Unable to use this private key file', `Couldn't load private key',
-       `Key is of wrong type'
+  10.8 `Unable to use key file', `Couldn't load private key', `Couldn't
+       load this key'
 
        Various forms of this error are printed in the PuTTY window, or
        written to the PuTTY Event Log (see section 3.1.3.1) when trying
@@ -6577,17 +6992,18 @@ Chapter 10: Common error messages
        tried to load a key of an inappropriate type into PuTTY, Plink,
        PSCP, PSFTP, or Pageant.
 
-       You may have specified a key that's inappropriate for the connection
-       you're making. The SSH-1 and SSH-2 protocols require different
-       private key formats, and a SSH-1 key can't be used for a SSH-2
-       connection (or vice versa).
+       You may have tried to load an SSH-2 key in a `foreign' format
+       (OpenSSH or ssh.com) directly into one of the PuTTY tools, in which
+       case you need to import it into PuTTY's native format (`*.PPK')
+       using PuTTYgen - see section 8.2.12.
 
-       Alternatively, you may have tried to load an SSH-2 key in a
-       `foreign' format (OpenSSH or ssh.com) directly into one of the PuTTY
-       tools, in which case you need to import it into PuTTY's native
-       format (`*.PPK') using PuTTYgen - see section 8.2.12.
+       Alternatively, you may have specified a key that's inappropriate for
+       the connection you're making. The SSH-2 and the old SSH-1 protocols
+       require different private key formats, and a SSH-1 key can't be used
+       for a SSH-2 connection (or vice versa).
 
-  10.9 `Server refused our public key' or `Key refused'
+  10.9 `Server refused our key', `Server refused our public key', `Key
+       refused'
 
        Various forms of this error are printed in the PuTTY window, or
        written to the PuTTY Event Log (see section 3.1.3.1) when trying
@@ -6625,16 +7041,16 @@ Chapter 10: Common error messages
        This error can be caused by buggy SSH-1 servers that fail to cope
        with the various strategies we use for camouflaging passwords in
        transit. Upgrade your server, or use the workarounds described in
-       section 4.27.1 and possibly section 4.27.2.
+       section 4.28.11 and possibly section 4.28.12.
 
  10.11 `No supported authentication methods available'
 
        This error indicates that PuTTY has run out of ways to authenticate
        you to an SSH server. This may be because PuTTY has TIS or keyboard-
-       interactive authentication disabled, in which case section 4.22.4
-       and section 4.22.5.
+       interactive authentication disabled, in which case see section
+       4.23.4 and section 4.23.5.
 
- 10.12 `Incorrect CRC received on packet' or `Incorrect MAC received on
+ 10.12 `Incorrect MAC received on packet' or `Incorrect CRC received on
        packet'
 
        This error occurs when PuTTY decrypts an SSH packet and its checksum
@@ -6652,7 +7068,7 @@ Chapter 10: Common error messages
        which may not be noticed.
 
        Occasionally this has been caused by server bugs. An example is the
-       bug described at section 4.27.6, although you're very unlikely to
+       bug described at section 4.28.8, although you're very unlikely to
        encounter that one these days.
 
        In this context MAC stands for Message Authentication Code. It's a
@@ -6669,7 +7085,7 @@ Chapter 10: Common error messages
 
        If you get this error, one thing you could try would be to fiddle
        with the setting of `Miscomputes SSH-2 encryption keys' (see section
-       4.27.7) or `Ignores SSH-2 maximum packet size' (see section 4.27.11)
+       4.28.10) or `Ignores SSH-2 maximum packet size' (see section 4.28.5)
        on the Bugs panel.
 
  10.14 `PuTTY X11 proxy: _various errors_'
@@ -6718,11 +7134,11 @@ Chapter 10: Common error messages
        to send the data and will then give up and kill the connection. In
        particular, this can occur even if you didn't type anything, if you
        are using SSH-2 and PuTTY attempts a key re-exchange. (See section
-       4.19.2 for more about key re-exchange.)
+       4.20.2 for more about key re-exchange.)
 
        (It can also occur if you are using keepalives in your connection.
        Other people have reported that keepalives _fix_ this error for
-       them. See section 4.13.1 for a discussion of the pros and cons of
+       them. See section 4.14.1 for a discussion of the pros and cons of
        keepalives.)
 
        We are not aware of any reason why this error might occur that would
@@ -6740,7 +7156,7 @@ Chapter 10: Common error messages
        connecting through a firewall or a NAT router which has timed the
        connection out. See question A.7.8 in the FAQ for more details.
        You may be able to improve the situation by using keepalives; see
-       section 4.13.1 for details on this.
+       section 4.14.1 for details on this.
 
        Note that Windows can produce this error in some circumstances
        without seeing a connection reset from the server, for instance if
@@ -6774,8 +7190,8 @@ Chapter 10: Common error messages
        up on receiving a reply from the server.) This can occur if you type
        things into PuTTY while the network is down, but it can also occur
        if PuTTY decides of its own accord to send data: due to a repeat key
-       exchange in SSH-2 (see section 4.19.2) or due to keepalives (section
-       4.13.1).
+       exchange in SSH-2 (see section 4.20.2) or due to keepalives (section
+       4.14.1).
 
  10.19 `Network error: Cannot assign requested address'
 
@@ -6830,10 +7246,11 @@ Appendix A: PuTTY FAQ
 
  A.2.1 Does PuTTY support SSH-2?
 
-       Yes. SSH-2 support has been available in PuTTY since version 0.50.
+       Yes. SSH-2 support has been available in PuTTY since version 0.50 in
+       2000.
 
-       Public key authentication (both RSA and DSA) in SSH-2 is new in
-       version 0.52.
+       Public key authentication (both RSA and DSA) in SSH-2 was new in
+       version 0.52 in 2002.
 
  A.2.2 Does PuTTY support reading OpenSSH or ssh.com SSH-2 private key
        files?
@@ -6877,12 +7294,12 @@ Appendix A: PuTTY FAQ
 
  A.2.6 Does PuTTY support storing its settings in a disk file?
 
-       Not at present, although section 4.29 in the documentation gives a
+       Not at present, although section 4.30 in the documentation gives a
        method of achieving the same effect.
 
  A.2.7 Does PuTTY support full-screen mode, like a DOS box?
 
-       Yes; this is a new feature in version 0.52.
+       Yes; this was added in version 0.52, in 2002.
 
  A.2.8 Does PuTTY have the ability to remember my password so I don't have
        to type it every time?
@@ -6951,24 +7368,28 @@ Appendix A: PuTTY FAQ
 A.2.10 Will you write an SSH server for the PuTTY suite, to go with the
        client?
 
-       No. The only reason we might want to would be if we could easily re-
-       use existing code and significantly cut down the effort. We don't
-       believe this is the case; there just isn't enough common ground
-       between an SSH client and server to make it worthwhile.
+       Not one that you'd want to use.
 
-       If someone else wants to use bits of PuTTY in the process of writing
-       a Windows SSH server, they'd be perfectly welcome to of course, but
-       I really can't see it being a lot less effort for us to do that than
-       it would be for us to write a server from the ground up. We don't
-       have time, and we don't have motivation. The code is available if
-       anyone else wants to try it.
+       While much of the protocol and networking code can be made common
+       between a client and server, to make a _useful_ general-purpose
+       server requires all sorts of fiddly new code like interacting with
+       OS authentication databases and the like.
+
+       A special-purpose SSH server (called Uppity) can now be built from
+       the PuTTY source code, and indeed it is not usable as a general-
+       purpose server; it exists mainly as a test harness.
+
+       If someone else wants to use this as a basis for writing a general-
+       purpose SSH server, they'd be perfectly welcome to of course; but we
+       don't have time, and we don't have motivation. The code is available
+       if anyone else wants to try it.
 
 A.2.11 Can PSCP or PSFTP transfer files in ASCII mode?
 
        Unfortunately not.
 
-       Until recently, this was a limitation of the file transfer
-       protocols: the SCP and SFTP protocols had no notion of transferring
+       This was a limitation of the file transfer protocols as originally
+       specified: the SCP and SFTP protocols had no notion of transferring
        a file in anything other than binary mode. (This is still true of
        SCP.)
 
@@ -6981,12 +7402,11 @@ A.2.11 Can PSCP or PSFTP transfer files in ASCII mode?
        The eventual goal is for PuTTY to be a multi-platform program, able
        to run on at least Windows, Mac OS and Unix.
 
-       Porting will become easier once PuTTY has a generalised porting
-       layer, drawing a clear line between platform-dependent and platform-
-       independent code. The general intention was for this porting layer
-       to evolve naturally as part of the process of doing the first port;
-       a Unix port has now been released and the plan seems to be working
-       so far.
+       PuTTY has been gaining a generalised porting layer, drawing a clear
+       line between platform-dependent and platform-independent code. The
+       general intention was for this porting layer to evolve naturally as
+       part of the process of doing the first port; a Unix port has now
+       been released and the plan seems to be working so far.
 
  A.3.1 What ports of PuTTY exist?
 
@@ -6997,8 +7417,10 @@ A.2.11 Can PSCP or PSFTP transfer files in ASCII mode?
        Windows from XP onwards, up to and including Windows 10; and
        we know of no reason why PuTTY should not continue to work on
        future versions of Windows. We provide 32-bit and 64-bit Windows
-       executables; see question A.6.10 for discussion of the compatibility
-       issues around that.
+       executables for the common x86 processor family; see question A.6.10
+       for discussion of the compatibility issues around that. The 32-bit
+       executables require a Pentium 4 or newer processor. We also provide
+       executables for Windows on Arm processors.
 
        (We used to also provide executables for Windows for the Alpha
        processor, but stopped after 0.58 due to lack of interest.)
@@ -7017,15 +7439,22 @@ A.2.11 Can PSCP or PSFTP transfer files in ASCII mode?
 
  A.3.2 Is there a port to Unix?
 
-       As of 0.54, there are Unix ports of most of the traditional PuTTY
-       tools, and also one entirely new application.
+       There are Unix ports of most of the traditional PuTTY tools, and
+       also one entirely new application.
 
        If you look at the source release, you should find a `unix'
        subdirectory. There are a couple of ways of building it, including
        the usual `configure'/`make'; see the file `README' in the source
-       distribution. This should build you Unix ports of Plink, PuTTY
-       itself, PuTTYgen, PSCP, PSFTP, Pageant, and also `pterm' - an xterm-
-       type program which supports the same terminal emulation as PuTTY.
+       distribution. This should build you:
+
+        -  Unix ports of PuTTY, Plink, PSCP, and PSFTP, which work pretty
+           much the same as their Windows counterparts;
+
+        -  Command-line versions of PuTTYgen and Pageant, whose user
+           interface is quite different to the Windows GUI versions;
+
+        -  `pterm' - an xterm-type program which supports the same terminal
+           emulation as PuTTY.
 
        If you don't have Gtk, you should still be able to build the
        command-line tools.
@@ -7088,7 +7517,8 @@ A.2.11 Can PSCP or PSFTP transfer files in ASCII mode?
 
        If any OS X and/or GTK programming experts are keen to have a
        finished version of this, we urge them to help out with some of the
-       remaining problems!
+       remaining problems! See the TODO list in `unix/gtkapp.c' in the
+       source code.
 
  A.3.7 Will there be a port to EPOC?
 
@@ -7188,6 +7618,55 @@ A.2.11 Can PSCP or PSFTP transfer files in ASCII mode?
 
        On Unix, PuTTY stores all of this data in a directory ~/.putty by
        default.
+
+ A.5.3 Why do small PuTTY icons appear next to the login prompts?
+
+       As of PuTTY 0.71, some lines of text in the terminal window are
+       marked with a small copy of the PuTTY icon (as far as pixels allow).
+
+       This is to show trustworthiness. When the PuTTY icon appears next to
+       a line of text, it indicates that that line of text was generated by
+       PuTTY itself, and not generated by the server and sent to PuTTY.
+
+       Text that comes from the server does not have this icon, and we've
+       arranged that the server should not be able to fake it. (There's
+       no control sequence the server can send which will make PuTTY draw
+       its own icon, and if the server tries to move the cursor back up to
+       a line that _already_ has an icon and overwrite the text, the icon
+       will disappear.)
+
+       This lets you tell the difference between (for example) a legitimate
+       prompt in which PuTTY itself asks you for your private key
+       passphrase, and a fake prompt in which the server tries to send
+       the identical text to trick you into telling _it_ your private key
+       passphrase.
+
+ A.5.4 Why has Plink started saying `Press Return to begin session'?
+
+       As of PuTTY 0.71, if you use Plink for an interactive SSH session,
+       then after the login phase has finished, it will present a final
+       interactive prompt saying `Access granted. Press Return to begin
+       session'.
+
+       This is another defence against servers trying to mimic the real
+       authentication prompts after the session has started. When you pass
+       through that prompt, you know that everything after it is generated
+       by the server and not by Plink itself, so any request for your
+       private key passphrase should be treated with suspicion.
+
+       In Plink, we can't use the defence described in section A.5.3: Plink
+       is running _in_ the terminal, so anything it can write into the
+       terminal, the server could write in the same way after the session
+       starts. And we can't just print a separator line without a pause,
+       because then the server could simply move the cursor back up to
+       it and overwrite it (probably with a brief flicker, but you might
+       easily miss that). The only robust defence anyone has come up with
+       involves this pause.
+
+       If you trust your server not to be abusive, you can turn this
+       off. It will also not appear in various other circumstances where
+       Plink can be confident it isn't necessary. See section 7.2.3.6 for
+       details.
 
    A.6 HOWTO questions
 
@@ -7356,7 +7835,7 @@ A.6.10 Should I run the 32-bit or the 64-bit version?
        If you need to use an external DLL for GSSAPI authentication, that
        DLL may only be available in a 32-bit or 64-bit form, and that will
        dictate the version of PuTTY you need to use. (You will probably
-       know if you're doing this; see section 4.23.2 in the documentation.)
+       know if you're doing this; see section 4.24.2 in the documentation.)
 
    A.7 Troubleshooting
 
@@ -7495,7 +7974,7 @@ A.6.10 Should I run the 32-bit or the 64-bit version?
        Keepalives don't solve everything, unfortunately; although they
        cause greater robustness against this sort of router, they can also
        cause a _loss_ of robustness against network dropouts. See section
-       4.13.1 in the documentation for more discussion of this.
+       4.14.1 in the documentation for more discussion of this.
 
  A.7.9 PuTTY's network connections time out too quickly when network
        connectivity is temporarily lost.
@@ -7712,7 +8191,7 @@ A.7.20 My SSH-2 session locks up for a few seconds every so often.
        These delays are inconvenient, but they are there for your
        protection. If they really cause you a problem, you can choose to
        turn off periodic rekeying using the `Kex' configuration panel (see
-       section 4.19), but be aware that you will be sacrificing security
+       section 4.20), but be aware that you will be sacrificing security
        for this. (Falling back to SSH-1 would also remove the delays, but
        would lose a _lot_ more security still. We do not recommend it.)
 
@@ -7738,6 +8217,27 @@ A.7.22 When I put 32-bit PuTTY in C:\WINDOWS\SYSTEM32 on my 64-bit Windows
        operations in the PuTTY suite that involve it accessing its own
        executables, such as `New Session' and `Duplicate Session', will not
        work.
+
+A.7.23 After I upgraded PuTTY to 0.68, I can no longer connect to my
+       embedded device or appliance.
+
+       If your SSH server has started unexpectedly closing SSH connections
+       after you enter your password, and it worked before 0.68, you may
+       have a buggy server that objects to certain SSH protocol extensions.
+
+       The SSH protocol recently gained a new `terminal mode', IUTF8, which
+       PuTTY sends by default; see section 4.25.2. This is the first new
+       terminal mode since the SSH-2 protocol was defined. While servers
+       are supposed to ignore modes they don't know about, some buggy
+       servers will unceremoniously close the connection if they see
+       anything they don't recognise. SSH servers in embedded devices,
+       network appliances, and the like seem to disproportionately have
+       this bug.
+
+       If you think you have such a server, from 0.69 onwards you can
+       disable sending of the IUTF8 mode: on the SSH / TTY panel, select
+       IUTF8 on the list, select `Nothing', and press `Set'. (It's not
+       possible to disable sending this mode in 0.68.)
 
    A.8 Security questions
 
@@ -8188,9 +8688,16 @@ A.9.16 The `sha1sums' / `sha256sums' / etc files on your download page
        coded the download page in an effort to reduce this confusion a
        bit.)
 
-       If you have double-checked that, and you still think there's a real
-       mismatch, then please send us a report carefully quoting everything
-       relevant:
+       Another thing to watch out for: as of 0.71, executables like
+       `putty.exe' come in two flavours for each platform: the standalone
+       versions on the website, each of which contains embedded help, and
+       the versions installed by the installer, which use a separate help
+       file also in the installer. We provide checksums for both; the
+       latter are indicated with `(installer version)' after the filename.
+
+       If you have double-checked all that, and you still think there's
+       a real mismatch, then please send us a report carefully quoting
+       everything relevant:
 
         -  the exact URL you got your binary from
 
@@ -8285,7 +8792,8 @@ Appendix B: Feedback and bug reporting
 
        (If the file contains confidential information, then you could
        encrypt it with our Secure Contact Key; see section E.1 for
-       details.)
+       details. Please _only_ use this for information that _needs_ to be
+       confidential.)
 
        Some people like to send mail in MS Word format. Please _don't_
        send us bug reports, or any other mail, as a Word document. Word
@@ -8382,12 +8890,12 @@ Appendix B: Feedback and bug reporting
            latest at the time you sent the message.
 
         -  PuTTY is a multi-platform application; tell us what version of
-           what OS you are running PuTTY on. (If you're running on Unix, or
-           Windows for Alpha, tell us, or we'll assume you're running on
+           what OS you are running PuTTY on. (If you're running on Unix,
+           or Windows for Arm, tell us, or we'll assume you're running on
            Windows for Intel as this is overwhelmingly the case.)
 
         -  Tell us what protocol you are connecting with: SSH, Telnet,
-           Rlogin or Raw mode.
+           Rlogin, or Raw mode, or a serial connection.
 
         -  Tell us what kind of server you are connecting to; what OS, and
            if possible what SSH server (if you're using SSH). You can get
@@ -8663,12 +9171,14 @@ Appendix B: Feedback and bug reporting
 Appendix C: PuTTY Licence
 -------------------------
 
-       PuTTY is copyright 1997-2017 Simon Tatham.
+       PuTTY is copyright 1997-2020 Simon Tatham.
 
        Portions copyright Robert de Bath, Joris van Rantwijk, Delian
        Delchev, Andreas Schultz, Jeroen Massar, Wez Furlong, Nicolas Barry,
        Justin Bradford, Ben Harris, Malcolm Smith, Ahmad Khalifa, Markus
-       Kuhn, Colin Watson, Christopher Staite, and CORE SDI S.A.
+       Kuhn, Colin Watson, Christopher Staite, Lorenz Diener, Christian
+       Brabandt, Jeff Smith, Pavel Kryukov, Maxim Kuznetsov, Svyatoslav
+       Kuzmich, Nico Williams, Viktor Dukhovni, and CORE SDI S.A.
 
        Permission is hereby granted, free of charge, to any person
        obtaining a copy of this software and associated documentation files
@@ -8712,30 +9222,92 @@ Appendix D: PuTTY hacking guide
 
        The PuTTY source base is divided into platform-specific modules
        and platform-generic modules. The Unix-specific modules are all in
-       the `unix' subdirectory; the Mac-specific modules are in the `mac'
-       subdirectory; the Windows-specific modules are in the `windows'
-       subdirectory.
+       the `unix' subdirectory; the Windows-specific modules are in the
+       `windows' subdirectory.
 
        All the modules in the main source directory - notably _all_ of the
        code for the various back ends - are platform-generic. We want to
        keep them that way.
 
-       This also means you should stick to what you are guaranteed by
-       ANSI/ISO C (that is, the original C89/C90 standard, not C99). Try
-       not to make assumptions about the precise size of basic types such
-       as `int' and `long int'; don't use pointer casts to do endianness-
-       dependent operations, and so on.
+       This also means you should stick to the C semantics guaranteed by
+       the C standard: try not to make assumptions about the precise size
+       of basic types such as `int' and `long int'; don't use pointer casts
+       to do endianness-dependent operations, and so on.
 
-       (There are one or two aspects of ANSI C portability which we _don't_
-       care about. In particular, we expect PuTTY to be compiled on 32-
-       bit architectures _or bigger_; so it's safe to assume that `int' is
-       at least 32 bits wide, not just the 16 you are guaranteed by ANSI
-       C. Similarly, we assume that the execution character encoding is
-       a superset of the printable characters of ASCII, though we don't
-       assume the numeric values of control characters, particularly '\n'
-       and '\r'. Also, the X forwarding code assumes that `time_t' has the
-       Unix format and semantics, i.e. an integer giving the number of
-       seconds since 1970.)
+       (Even _within_ a platform front end you should still be careful of
+       some of these portability issues. The Windows front end compiles on
+       both 32- and 64-bit x86 and also Arm.)
+
+       Our current choice of C standards version is _mostly_ C99. With a
+       couple of exceptions, you can assume that C99 features are available
+       (in particular <stdint.h>, <stdbool.h> and `inline'), but you
+       shouldn't use things that are new in C11 (such as <uchar.h> or
+       _Generic).
+
+       The exceptions to that rule are due to the need for Visual Studio
+       compatibility:
+
+        -  Don't use variable-length arrays. Visual Studio doesn't support
+           them even now that it's adopted the rest of C99. We use -Wvla
+           when building with gcc and clang, to make it easier to avoid
+           accidentally breaking that rule.
+
+        -  For historical reasons, we still build with one older VS version
+           which lacks <inttypes.h>. So that file is included centrally
+           in `defs.h', and has a set of workaround definitions for the
+           PRIx64-type macros we use. If you need to use another one
+           of those macros, you need to add a workaround definition in
+           `defs.h', and don't casually re-include <inttypes.h> anywhere
+           else in the source file.
+
+       Here are a few portability assumptions that we _do_ currently allow
+       (because we'd already have to thoroughly vet the existing code if
+       they ever needed to change, and it doesn't seem worth doing that
+       unless we really have to):
+
+        -  You can assume `int' is _at least_ 32 bits wide. (We've never
+           tried to port PuTTY to a platform with 16-bit int, and it
+           doesn't look likely to be necessary in future.)
+
+        -  Similarly, you can assume `char' is exactly 8 bits. (Exceptions
+           to that are even less likely to be relevant to us than short
+           int.)
+
+        -  You can assume that using `memset' to write zero bytes over a
+           whole structure will have the effect of setting all its pointer
+           fields to NULL. (The standard itself guarantees this for
+           _integer_ fields, but not for pointers.)
+
+        -  You can assume that `time_t' has POSIX semantics, i.e. that
+           it represents an integer number of non-leap seconds since
+           1970-01-01 00:00:00 UTC. (Times in this format are used in
+           X authorisation, but we could work around that by carefully
+           distinguishing local `time_t' from time values used in the wire
+           protocol; but these semantics of `time_t' are also baked into
+           the shared library API used by the GSSAPI authentication code,
+           which would be much harder to change.)
+
+        -  You can assume that the execution character encoding is a
+           superset of the printable characters of ASCII. (In particular,
+           it's fine to do arithmetic on a `char' value representing a
+           Latin alphabetic character, without bothering to allow for
+           EBCDIC or other non-consecutive encodings of the alphabet.)
+
+       On the other hand, here are some particular things _not_ to assume:
+
+        -  Don't assume anything about the _signedness_ of `char'. In
+           particular, you _must_ cast `char' values to `unsigned char'
+           before passing them to any <ctype.h> function (because those
+           expect a non-negative character value, or EOF). If you need
+           a particular signedness, explicitly specify `signed char' or
+           `unsigned char', or use C99 int8_t or uint8_t.
+
+        -  From past experience with MacOS, we're still a bit nervous about
+           '\n' and '\r' potentially having unusual meanings on a given
+           platform. So it's fine to say `\n' in a string you're passing to
+           `printf', but in any context where those characters appear in a
+           standardised wire protocol or a binary file format, they should
+           be spelled '\012' and '\015' respectively.
 
    D.2 Multiple backends treated equally
 
@@ -8825,9 +9397,9 @@ Appendix D: PuTTY hacking guide
 
    D.6 Independence of specific compiler
 
-       Windows PuTTY can currently be compiled with any of four Windows
-       compilers: MS Visual C, Borland's freely downloadable C compiler,
-       the Cygwin / mingw32 GNU tools, and lcc-win32.
+       Windows PuTTY can currently be compiled with any of three Windows
+       compilers: MS Visual C, the Cygwin / mingw32 GNU tools, and clang
+       (in MS compatibility mode).
 
        This is a really useful property of PuTTY, because it means people
        who want to contribute to the coding don't depend on having a
@@ -8995,27 +9567,44 @@ Appendix D: PuTTY hacking guide
        archive saying this, but many people don't seem to read it, so it's
        worth repeating here.)
 
-  D.12 Coroutines in ssh.c
+  D.12 Coroutines in the SSH code
 
-       Large parts of the code in ssh.c are structured using a set
-       of macros that implement (something close to) Donald Knuth's
-       `coroutines' concept in C.
+       Large parts of the code in the various SSH modules (in fact most
+       of the protocol layers) are structured using a set of macros that
+       implement (something close to) Donald Knuth's `coroutines' concept
+       in C.
 
        Essentially, the purpose of these macros are to arrange that a
        function can call crReturn() to return to its caller, and the next
        time it is called control will resume from just after that crReturn
        statement.
 
-       This means that any local (automatic) variables declared in such
-       a function will be corrupted every time you call crReturn. If you
-       need a variable to persist for longer than that, you _must_ make it
-       a field in one of the persistent state structures: either the local
-       state structures `s' or `st' in each function, or the backend-wide
-       structure `ssh'.
+       This means that any local (automatic) variables declared in such a
+       function will be corrupted every time you call crReturn. If you need
+       a variable to persist for longer than that, you _must_ make it a
+       field in some appropriate structure containing the persistent state
+       of the coroutine - typically the main state structure for an SSH
+       protocol layer.
 
        See `https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html'
        for a more in-depth discussion of what these macros are for and how
        they work.
+
+       Another caveat: most of these coroutines are not _guaranteed_ to run
+       to completion, because the SSH connection (or whatever) that they're
+       part of might be interrupted at any time by an unexpected network
+       event or user action. So whenever a coroutine-managed variable
+       refers to a resource that needs releasing, you should also ensure
+       that the cleanup function for its containing state structure can
+       reliably release it even if the coroutine is aborted at an arbitrary
+       point.
+
+       For example, if an SSH packet protocol layer has to have a field
+       that sometimes points to a piece of allocated memory, then you
+       should ensure that when you free that memory you reset the pointer
+       field to NULL. Then, no matter when the protocol layer's cleanup
+       function is called, it can reliably free the memory if there is any,
+       and not crash if there isn't.
 
   D.13 Single compilation of each source file
 
@@ -9085,6 +9674,11 @@ Appendix E: PuTTY download keys and signatures
        establish a trust path, for instance to a newer version downloaded
        from the Internet.
 
+       As of release 0.67, the Windows executables and installer also
+       contain built-in signatures that are automatically verified by
+       Windows' own mechanism (`Authenticode'). The keys used for that are
+       different, and are not covered here.
+
        (Note that none of the keys, signatures, etc mentioned here have
        anything to do with keys used with SSH - they are purely for
        verifying the origin of files distributed by the PuTTY team.)
@@ -9123,30 +9717,25 @@ Appendix E: PuTTY download keys and signatures
        PuTTY website, and are also available on PGP keyservers using the
        key IDs listed below.
 
-       *Master Key*
+       *Master Key* (2018)
 
-           RSA, 4096-bit. Key ID: 4096R/04676F7C (long
-           version: 4096R/AB585DC604676F7C). Fingerprint:
-           440D E3B5 B7A1 CA85 B3CC  1718 AB58 5DC6 0467 6F7C
+           RSA, 4096-bit. Key ID: 76BC7FE4EBFD2D9E. Fingerprint:
+           24E1 B1C5 75EA 3C9F F752  A922 76BC 7FE4 EBFD 2D9E
 
-       *Release Key*
+       *Release Key* (2018)
 
-           RSA, 2048-bit. Key ID: 2048R/B43434E4 (long
-           version: 2048R/9DFE2648B43434E4). Fingerprint:
-           0054 DDAA 8ADA 15D2 768A  6DE7 9DFE 2648 B434 34E4
+           RSA, 3072-bit. Key ID: 6289A25F4AE8DA82. Fingerprint:
+           E273 94AC A3F9 D904 9522  E054 6289 A25F 4AE8 DA82
 
-       *Secure Contact Key*
+       *Snapshot Key* (2018)
 
-           RSA, 2048-bit. Main key ID: 2048R/8A0AF00B (long version:
-           2048R/C4FCAAD08A0AF00B). Encryption subkey ID: 2048R/50C2CF5C
-           (long version: 2048R/9EB39CC150C2CF5C). Fingerprint:
-           8A26 250E 763F E359 75F3  118F C4FC AAD0 8A0A F00B
+           RSA, 3072-bit. Key ID: 38BA7229B7588FD1. Fingerprint:
+           C92B 52E9 9AB6 1DDA 33DB  2B7A 38BA 7229 B758 8FD1
 
-       *Snapshot Key*
+       *Secure Contact Key* (2018)
 
-           RSA, 2048-bit. Key ID: 2048R/D15F7E8A (long
-           version: 2048R/EEF20295D15F7E8A). Fingerprint:
-           0A3B 0048 FE49 9B67 A234  FEB6 EEF2 0295 D15F 7E8A
+           RSA, 3072-bit. Key ID: 657D487977F95C98. Fingerprint:
+           A680 0082 2998 6E46 22CA  0E43 657D 4879 77F9 5C98
 
    E.2 Security details
 
@@ -9226,28 +9815,54 @@ Appendix E: PuTTY download keys and signatures
 
    E.3 Key rollover
 
-       Our current keys were generated in September 2015, except for the
-       Secure Contact Key which was generated in February 2016 (we didn't
-       think of it until later).
+       Our current keys were generated in August 2018.
 
-       Prior to that, we had a much older set of keys generated in 2000.
-       For each of the key types above (other than the Secure Contact Key),
-       we provided both an RSA key _and_ a DSA key (because at the time we
-       generated them, RSA was not in practice available to everyone, due
-       to export restrictions).
+       Each new Master Key is signed with the old one, to show that it
+       really is owned by the same people and not substituted by an
+       attacker.
 
-       The new Master Key is signed with both of the old ones, to show
-       that it really is owned by the same people and not substituted by
-       an attacker. Also, we have retrospectively signed the old Release
-       Keys with the new Master Key, in case you're trying to verify the
-       signatures on a release prior to the rollover and can find a chain
-       of trust to those keys from any of the people who have signed our
-       new Master Key.
+       Each new Master Key also signs the previous Release Keys, in case
+       you're trying to verify the signatures on a release prior to the
+       rollover and can find a chain of trust to those keys from any of the
+       people who have signed our new Master Key.
 
-       Future releases will be signed with the up-to-date keys shown above.
-       Releases prior to the rollover are signed with the old Release Keys.
+       Each release is signed with the Release Key that was current at the
+       time of release. We don't go back and re-sign old releases with
+       newly generated keys.
 
-       For completeness, those old keys are given here:
+       The details of all previous keys are given here.
+
+       *Key generated in 2016* (when we first introduced the Secure Contact
+       Key)
+
+       *Secure Contact Key* (2016)
+
+           RSA, 2048-bit. Main key ID: 2048R/8A0AF00B (long version:
+           2048R/C4FCAAD08A0AF00B). Encryption subkey ID: 2048R/50C2CF5C
+           (long version: 2048R/9EB39CC150C2CF5C). Fingerprint:
+           8A26 250E 763F E359 75F3  118F C4FC AAD0 8A0A F00B
+
+       *Keys generated in the 2015 rollover*
+
+       *Master Key* (2015)
+
+           RSA, 4096-bit. Key ID: 4096R/04676F7C (long
+           version: 4096R/AB585DC604676F7C). Fingerprint:
+           440D E3B5 B7A1 CA85 B3CC  1718 AB58 5DC6 0467 6F7C
+
+       *Release Key* (2015)
+
+           RSA, 2048-bit. Key ID: 2048R/B43434E4 (long
+           version: 2048R/9DFE2648B43434E4). Fingerprint:
+           0054 DDAA 8ADA 15D2 768A  6DE7 9DFE 2648 B434 34E4
+
+       *Snapshot Key* (2015)
+
+           RSA, 2048-bit. Key ID: 2048R/D15F7E8A (long
+           version: 2048R/EEF20295D15F7E8A). Fingerprint:
+           0A3B 0048 FE49 9B67 A234  FEB6 EEF2 0295 D15F 7E8A
+
+       *Original keys generated in 2000* (two sets, RSA and DSA)
 
        *Master Key* (original RSA)
 
@@ -9315,7 +9930,7 @@ Appendix F: SSH-2 names specified for PuTTY
            request and respond with SSH_MSG_CHANNEL_FAILURE.
 
            (Some SSH servers get confused by this message, so there is a
-           bug-compatibility mode for disabling it. See section 4.27.5.)
+           bug-compatibility mode for disabling it. See section 4.28.3.)
 
    F.2 Key exchange method names
 
@@ -9354,4 +9969,4 @@ Appendix F: SSH-2 names specified for PuTTY
            These were used in drafts of what eventually became RFC 4345.
            They have been superseded by arcfour128 and arcfour256.
 
-[PuTTY release 0.70]
+[PuTTY release 0.74]

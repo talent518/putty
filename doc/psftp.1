@@ -45,6 +45,8 @@ Backslash escapes are also supported, such as sequences like \fB\en\fP being rep
 Set remote username to \fIuser\fP.
 .IP "\fB-batch\fP"
 Disable interactive prompts.
+.IP "\fB-no-sanitise-stderr\fP"
+By default, PSFTP will filter control characters from the standard error channel from the server, to prevent remote processes sending confusing escape sequences. This option forces the standard error channel to not be filtered.
 .IP "\fB-pw\fP \fIpassword\fP"
 Set remote password to \fIpassword\fP. \fICAUTION:\fP this will likely make the password visible to other users of the local machine (via commands such as `\fBw\fP').
 .IP "\fB-1\fP"
