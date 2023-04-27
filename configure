@@ -6170,7 +6170,6 @@ fi
 
 if test "x$GCC" = "xyes"; then
   :
-  WARNINGOPTS='-Wall -Werror'
 
 else
   :

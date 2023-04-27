@@ -10,7 +10,7 @@
 AC_INIT(putty, 0.70)
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_HEADERS([uxconfig.h:uxconfig.in])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE([foreign])
 
 AC_PROG_INSTALL
 AC_PROG_RANLIB
@@ -185,7 +185,7 @@ AS_IF([test AS_VAR_GET(x_cv_linux_so_peercred) = yes],
 
 if test "x$GCC" = "xyes"; then
   :
-  AC_SUBST(WARNINGOPTS, ['-Wall -Werror'])
+  AC_SUBST(WARNINGOPTS, [])
 else
   :
   AC_SUBST(WARNINGOPTS, [])
